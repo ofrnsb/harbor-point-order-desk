@@ -1,0 +1,6 @@
+.sp-ui-datetile { flex: none; display: grid; justify-items: center; align-content: center; width: 44px; height: 44px; border-radius: 8px; }
+.sp-ui-datetile:not(:empty) { background: var(--sp-input); }
+.sp-ui-datetile strong { font-size: 16px; line-height: 20px; font-weight: 600; }
+.sp-ui-datetile span { font-size: 11px; line-height: 14px; color: var(--ap-ink-3); }
+.sp-ui-datetile[data-today] { background: var(--ap-accent); color: var(--ap-accent-ink); }
+.sp-ui-datetile[data-today] span { color: inherit; opacity: 0.85; }

@@ -1,0 +1,12 @@
+.sp-ui-amount { display: inline-flex; align-items: baseline; max-width: 100%; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.sp-ui-amount-sign { margin-inline-end: 0.04em; }
+.sp-ui-amount-cur { align-self: flex-start; margin: 0.16em 0.14em 0 0; font-size: max(0.42em, 10.5px); line-height: 1; font-weight: 600; letter-spacing: 0; color: var(--ap-accent); }
+.sp-ui-amount-unit { margin-inline-start: 0.16em; font-weight: inherit; color: var(--ap-ink-3); }
+
+/* Clearing: each digit is a drum of two turns; it settles on its digit in the second turn, rightmost column first. */
+.sp-ui-roll { display: inline-block; height: 1.15em; overflow: hidden; vertical-align: top; }
+.sp-ui-roll-drum { display: block; transform: translateY(calc((10 + var(--d)) * -5%)); transition: transform 900ms cubic-bezier(0.2, 0.8, 0.2, 1); animation: sp-ui-roll 1300ms cubic-bezier(0.16, 0.84, 0.24, 1) calc(var(--i) * 55ms) both; }
+.sp-ui-roll-drum > span { display: block; height: 1.15em; line-height: 1.15em; text-align: center; }
+.sp-ui-amount-num:has(.sp-ui-roll) { display: inline-flex; line-height: 1.15em; }
+@keyframes sp-ui-roll { from { transform: translateY(0); filter: blur(0.6px); } 70% { filter: none; } }
+@media (prefers-reduced-motion: reduce) { .sp-ui-roll-drum { animation: none; transition: none; } }

@@ -1,0 +1,36 @@
+{
+  "name": "harbor-point-order-desk",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "config": {
+    "port": "3150"
+  },
+  "scripts": {
+    "dev": "next dev -p $npm_package_config_port -H 127.0.0.1",
+    "build": "next build",
+    "start": "next start -p $npm_package_config_port -H 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.ts",
+    "verify": "node --env-file-if-exists=.env.local scripts/verify.mjs",
+    "reset": "node --env-file-if-exists=.env.local scripts/reset.mjs",
+    "seed": "node --env-file-if-exists=.env.local scripts/seed-chats.mjs",
+    "triage-report": "node --env-file-if-exists=.env.local scripts/triage-report.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/claude-agent-sdk": "^0.3.314",
+    "better-sqlite3": "^13.0.3",
+    "motion": "^14.8.0",
+    "next": "16.4.6",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^9.6.0",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "typescript": "^5"
+  }
+}

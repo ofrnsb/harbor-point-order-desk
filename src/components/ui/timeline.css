@@ -1,0 +1,13 @@
+.sp-ui-timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.sp-ui-timeline li { position: relative; display: flex; gap: 12px; padding-bottom: 16px; }
+.sp-ui-timeline li:last-child { padding-bottom: 0; }
+.sp-ui-timeline li:not(:last-child)::before { content: ""; position: absolute; left: 9px; top: 23px; bottom: 2px; width: 2px; border-radius: 2px; background: var(--ap-hairline); }
+.sp-ui-timeline li[data-state="done"]:not(:last-child)::before { background: var(--ap-accent); opacity: 0.38; }
+.sp-ui-timeline-dot { position: relative; flex: none; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 999px; background: var(--ap-sunk); color: var(--ap-accent-ink); }
+.sp-ui-timeline li[data-state="done"] .sp-ui-timeline-dot { background: var(--ap-accent); }
+.sp-ui-timeline li[data-state="current"] .sp-ui-timeline-dot { background: var(--ap-surface); box-shadow: inset 0 0 0 2.5px var(--ap-accent), 0 0 0 4px var(--ap-accent-tint); }
+.sp-ui-timeline li[data-state="failed"] .sp-ui-timeline-dot { background: var(--ap-bad); }
+.sp-ui-timeline-body { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.sp-ui-timeline-body strong { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ap-ink); }
+.sp-ui-timeline li[data-state="pending"] strong { color: var(--ap-ink-3); font-weight: 500; }
+.sp-ui-timeline-meta { font-size: 13px; line-height: 18px; color: var(--ap-ink-3); }

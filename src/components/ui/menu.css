@@ -1,0 +1,43 @@
+/* Menu primitive: trigger, panel and choices. */
+.sp-ui-menu-wrap { position: relative; min-width: 0; }
+.sp-ui-menu-wrap[data-grow] { flex: 1; max-width: 380px; }
+.sp-ui-menu {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: var(--ap-z-pop); width: min(320px, calc(100vw - 24px));
+  max-height: min(480px, calc(100dvh - 90px)); overflow: auto; padding: 6px; border-radius: 10px;
+  background: var(--ap-surface); box-shadow: var(--ap-float); transform-origin: top right;
+  translate: var(--sp-ui-menu-shift, 0) 0; border-radius: 22px; padding: 8px;
+}
+.sp-ui-menu[data-align="start"] { left: 0; right: auto; width: min(320px, calc(100vw - 24px)); transform-origin: top left; }
+.sp-ui-menu-title { margin: 4px 8px 6px; font-size: 13px; font-weight: 500; color: var(--ap-ink-3); }
+.sp-ui-menu-item {
+  width: 100%; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 10px; border: 0; border-radius: 14px;
+  background: transparent; color: var(--ap-ink); font: inherit; text-align: start; cursor: pointer; text-decoration: none;
+  transition: background-color var(--ap-d2) var(--ap-ease);
+}
+.sp-ui-menu-item[aria-selected="true"] { background: var(--ap-accent-tint); }
+.sp-ui-menu-item:disabled { opacity: 0.6; cursor: progress; }
+.sp-ui-menu-item:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: -2px; }
+@media (hover: hover) { .sp-ui-menu-item:not(:disabled):hover { background: rgb(255 255 255 / 0.55); } }
+.sp-ui-menu-item > svg { flex-shrink: 0; color: var(--ap-ink-3); }
+.sp-ui-menu-main { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.sp-ui-menu-main strong { font-weight: 500; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-ui-menu-main small { font-size: 13px; line-height: 18px; color: var(--ap-ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-ui-menu-item > .sp-ui-menu-check { color: var(--ap-accent); }
+.sp-ui-menu-card { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px 10px; margin-bottom: 4px; box-shadow: 0 1px 0 var(--ap-hairline); }
+.sp-ui-menu-trigger {
+  display: inline-flex; align-items: center; gap: 8px; width: 100%; min-height: 44px; min-width: 0; padding: 6px 8px 6px 12px; border: 0; border-radius: 8px;
+  background: var(--ap-surface); box-shadow: var(--ap-lift); color: var(--ap-ink); font: inherit; text-align: start; cursor: pointer;
+  transition: box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease);
+}
+.sp-ui-menu-trigger[data-quiet] { width: auto; padding: 0 4px; min-height: 40px; border-radius: 999px; background: transparent; box-shadow: none; }
+.sp-ui-menu-trigger[data-quiet] .sp-ui-avatar { transition: box-shadow var(--ap-d2) var(--ap-ease), translate var(--ap-d2) var(--ap-ease); }
+.sp-ui-menu-trigger:not(:disabled):active { scale: 0.98; }
+.sp-ui-menu-trigger:disabled { opacity: 0.6; cursor: progress; }
+.sp-ui-menu-trigger[data-static] { cursor: default; }
+.sp-ui-menu-trigger:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 2px; }
+@media (hover: hover) {
+  .sp-ui-menu-trigger:not(:disabled):hover { box-shadow: var(--ap-lift-hover); }
+  .sp-ui-menu-trigger[data-quiet]:not(:disabled):hover { box-shadow: none; background: transparent; }
+  .sp-ui-menu-trigger[data-quiet]:not(:disabled):hover .sp-ui-avatar { box-shadow: var(--sp-raise-s); translate: 0 -1px; }
+}
+.sp-ui-menu-trigger > svg { flex-shrink: 0; color: var(--ap-ink-3); }

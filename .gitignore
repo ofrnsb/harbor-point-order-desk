@@ -1,0 +1,25 @@
+node_modules
+.next
+data/
+next-env.d.ts
+*.tsbuildinfo
+.env*.local
+
+# Rendered and recorded media stay out of git; the video sources stay in.
+.DS_Store
+__pycache__/
+*.pyc
+brag-output/**/*.mp4
+brag-output/**/*.wav
+brag-output/**/*.mp3
+brag-output/**/*.png
+brag-output/**/*.jpg
+brag-output/**/*.log
+brag-output/**/*.rects
+!brag-output/preiya-motion/public/*.png
+brag-output/work/brush/
+brag-output/work/*.svg
+
+brag-output/
+public/_board/
+.deployed-sha

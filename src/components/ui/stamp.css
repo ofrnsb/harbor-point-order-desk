@@ -1,0 +1,36 @@
+/* A decision leaves one mark: a small seal, the decision in words, its reference beneath in mono. */
+.sp-ui-stamp {
+  --sp-ui-stamp-ink: var(--sp-stamp);
+  display: inline-grid; grid-template-columns: 18px minmax(0, auto); align-items: center; column-gap: 8px; flex: 0 1 auto; min-width: 0; max-width: 100%;
+  color: var(--ap-ink); font-size: 13.5px; line-height: 18px; font-weight: 600; white-space: nowrap; text-align: start;
+  animation: sp-ui-stamp-fade var(--ap-d2) var(--ap-ease) both;
+}
+/* A decision lands like a rubber stamp: the seal drops in tilted, settles, and a ring of ink spreads and fades. */
+.sp-ui-stamp-seal { width: 18px; height: 18px; overflow: visible; transform-origin: center; animation: sp-ui-stamp-press 560ms cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+.sp-ui-stamp[data-state="waiting"] .sp-ui-stamp-seal { animation: none; }
+.sp-ui-stamp-bleed { fill: none !important; stroke: var(--sp-ui-stamp-ink); stroke-width: 1.2; transform-origin: 9px 9px; opacity: 0; animation: sp-ui-stamp-bleed 700ms var(--ap-ease) 180ms both; }
+/* A sealed decision catches the light once: a foil sheen crosses the seal after it lands. */
+.sp-ui-stamp-foil { mix-blend-mode: screen; transform-origin: 9px 9px; opacity: 0; animation: sp-ui-stamp-sheen 1400ms var(--ap-ease) 520ms both; }
+@keyframes sp-ui-stamp-sheen { 0% { opacity: 0; transform: rotate(-60deg); } 40% { opacity: 0.9; } 100% { opacity: 0; transform: rotate(120deg); } }
+@keyframes sp-ui-stamp-press { 0% { opacity: 0; transform: scale(1.9) rotate(-14deg); } 60% { opacity: 1; transform: scale(0.94) rotate(2deg); } 100% { transform: none; } }
+@keyframes sp-ui-stamp-bleed { 0% { opacity: 0.55; transform: scale(1); } 100% { opacity: 0; transform: scale(1.9); } }
+.sp-ui-stamp-seal circle:not(.sp-ui-stamp-foil) { fill: var(--sp-ui-stamp-ink); }
+.sp-ui-stamp-seal path { fill: none; stroke: var(--ap-accent-ink); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; animation: sp-ui-stamp-draw var(--ap-d4, 420ms) var(--ap-ease) var(--ap-d1) both; }
+.sp-ui-stamp-meta { grid-column: 2; font-family: var(--ap-mono); font-size: 12px; line-height: 16px; font-weight: 400; color: var(--ap-ink-3); }
+.sp-ui-stamp[data-state="waiting"] { color: var(--ap-ink-2); }
+.sp-ui-stamp[data-state="waiting"] .sp-ui-stamp-seal circle { fill: none; stroke: var(--ap-ink-3); stroke-width: 1.5; stroke-dasharray: 3 3.28; transform-origin: 9px 9px; animation: sp-ui-stamp-turn 6s linear infinite; }
+.sp-ui-stamp[data-state="cancelled"] { --sp-ui-stamp-ink: var(--ap-ink-3); color: var(--ap-ink-2); }
+.sp-ui-stamp[data-state="rejected"], .sp-ui-stamp[data-state="failed"] { --sp-ui-stamp-ink: var(--ap-bad); }
+@keyframes sp-ui-stamp-fade { from { opacity: 0; } }
+@keyframes sp-ui-stamp-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes sp-ui-stamp-turn { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .sp-ui-stamp-seal, .sp-ui-stamp-bleed, .sp-ui-stamp-seal path, .sp-ui-stamp[data-state="waiting"] .sp-ui-stamp-seal circle { animation: none; } .sp-ui-stamp-bleed, .sp-ui-stamp-foil { display: none; } }
+.sp-ui-stamp-word, .sp-ui-stamp-meta { overflow: hidden; text-overflow: ellipsis; }
+
+/* The seal of the one decision an answer is about: a raised disc with a sunk ring, its glyph drawn large in the state's
+   ink, the decision in serif and who and when beneath. */
+.sp-ui-stamp[data-size="l"] { grid-template-columns: 76px minmax(0, auto); column-gap: 18px; font-family: var(--sp-serif); font-size: 26px; line-height: 30px; font-weight: 400; white-space: normal; }
+.sp-ui-stamp[data-size="l"] .sp-ui-stamp-seal { grid-row: span 2; width: 76px; height: 76px; padding: 14px; border-radius: 50%; background: var(--ap-surface); box-shadow: var(--sp-raise-s), inset 0 0 0 7px var(--ap-surface), inset 2px 2px 6px 7px rgb(28 44 78 / 0.1); overflow: visible; }
+.sp-ui-stamp[data-size="l"]:not([data-state="waiting"]) .sp-ui-stamp-seal circle:not(.sp-ui-stamp-foil, .sp-ui-stamp-bleed) { fill: none; stroke: none; }
+.sp-ui-stamp[data-size="l"] .sp-ui-stamp-seal path { stroke: var(--sp-ui-stamp-ink); stroke-width: 2.2; animation-duration: 900ms; animation-delay: 450ms; filter: drop-shadow(0 1px 1.5px color-mix(in srgb, var(--sp-ui-stamp-ink) 50%, transparent)); }
+.sp-ui-stamp[data-size="l"] .sp-ui-stamp-meta { font-size: 12.5px; line-height: 18px; white-space: nowrap; }

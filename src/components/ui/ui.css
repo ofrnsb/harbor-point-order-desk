@@ -1,0 +1,476 @@
+/* The primitives (components/ui): every size is a token here, so whoever arranges them never styles anything.
+   One text scale, one row height, one width per kind of column; long content pages (tables) or scrolls (lists). */
+:root {
+  --sp-ui-row: 56px; --sp-ui-row-tight: 44px; --sp-ui-head: 40px; --sp-ui-control: 44px;
+  --sp-ui-pad-x: 16px; --sp-ui-edge: 24px; --sp-ui-section-pad: 24px; --sp-ui-radius: var(--ap-radius-card);
+  --sp-ui-gap-s: 8px; --sp-ui-gap-m: 16px; --sp-ui-gap-l: 24px;
+  /* Column widths by kind. title and wide are minimums: they take the room the fixed kinds leave. */
+  --sp-ui-w-title: 220px; --sp-ui-w-wide: 280px; --sp-ui-w-text: 152px; --sp-ui-w-code: 120px; --sp-ui-w-num: 88px; --sp-ui-w-money: 144px;
+  --sp-ui-w-date: 120px; --sp-ui-w-badge: 200px; --sp-ui-w-status: 152px; --sp-ui-w-actions: 176px; --sp-ui-w-icon: 56px;
+  --sp-ui-list-s: 240px; --sp-ui-list-m: 360px; --sp-ui-list-l: 480px; --sp-ui-detail: 320px;
+}
+
+/* ---------- Text ---------- */
+.sp-ui-title { margin: 0; color: var(--ap-ink); font-weight: 600; min-width: 0; }
+/* A screen title or an answer's headline is a finding: it speaks in serif. */
+.sp-ui-title[data-level="1"] { font-family: var(--sp-serif); font-size: 40px; line-height: 42px; font-weight: 400; letter-spacing: -0.01em; text-wrap: balance; }
+.sp-ui-title[data-level="2"] { font-size: 17px; line-height: 24px; font-weight: 620; letter-spacing: -0.012em; text-wrap: balance; }
+.sp-ui-title[data-level="3"] { font-size: 14.5px; line-height: 20px; color: var(--ap-ink-2); }
+.sp-ui-text { margin: 0; min-width: 0; max-width: 72ch; font-size: 15px; line-height: 23px; color: var(--ap-ink); text-wrap: pretty; }
+.sp-ui-text[data-size="s"] { font-size: 13px; line-height: 18px; }
+.sp-ui-text[data-size="l"] { font-size: 17px; line-height: 24px; }
+.sp-ui-text[data-tone="muted"] { color: var(--ap-ink-3); }
+.sp-ui-text[data-tone="accent"] { color: var(--ap-accent); }
+.sp-ui-text[data-tone="good"] { color: var(--ap-good); } .sp-ui-text[data-tone="warn"] { color: var(--ap-warn); } .sp-ui-text[data-tone="bad"] { color: var(--ap-bad); }
+.sp-ui-text[data-strong] { font-weight: 600; }
+.sp-ui-text[data-mono] { font-family: var(--ap-mono); font-size: 0.93em; }
+.sp-ui-text[data-truncate] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* A remark in its tone: the mark says what kind at a glance, the title says what, the words say why. */
+/* A remark sits on the surface as a raised strip; its sign is a lit disc in the remark's tone. */
+.sp-ui-callout { --sp-ui-callout-ink: var(--ap-info); --sp-ui-callout-fill: var(--sp-accg); display: grid; grid-template-columns: 32px minmax(0, 1fr); align-items: center; column-gap: 12px; padding: 12px 16px; border-radius: 20px; background: var(--ap-surface); box-shadow: var(--sp-raise-xs); font-size: 14.5px; line-height: 21px; color: var(--ap-ink-2); animation: sp-ui-rise var(--ap-d3) var(--ap-ease) both; }
+.sp-ui-callout[data-tone="good"] { --sp-ui-callout-ink: var(--ap-good); --sp-ui-callout-fill: var(--sp-goodg); }
+.sp-ui-callout[data-tone="warn"] { --sp-ui-callout-ink: var(--ap-warn); --sp-ui-callout-fill: linear-gradient(140deg, #ffc35a, #c77700); }
+.sp-ui-callout[data-tone="bad"] { --sp-ui-callout-ink: var(--ap-bad); --sp-ui-callout-fill: linear-gradient(140deg, #f2626b, #a3202b); }
+.sp-ui-callout[data-tone="neutral"] { --sp-ui-callout-ink: var(--ap-ink-3); --sp-ui-callout-fill: linear-gradient(140deg, #8a94a8, #4f596e); }
+.sp-ui-callout-mark { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--sp-ui-callout-fill); color: #fff; box-shadow: 0 6px 14px -6px var(--sp-ui-callout-ink); }
+.sp-ui-callout-words { display: grid; gap: 2px; min-width: 0; overflow-wrap: anywhere; }
+.sp-ui-callout strong { font-weight: 600; color: var(--ap-ink); }
+
+/* ---------- Marks ---------- */
+/* A long label wraps inside the button rather than running past its container. */
+.sp-ui-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: var(--sp-ui-control); max-width: 100%; padding: 8px 18px; border: 0; border-radius: 999px; box-shadow: var(--sp-raise-xs); font: inherit; font-size: 14px; line-height: 20px; font-weight: 500; white-space: normal; text-align: center; text-decoration: none; cursor: pointer; background: var(--ap-surface); color: var(--ap-ink); flex: none; transition: background-color var(--ap-d2) var(--ap-ease), translate var(--ap-d1) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease); }
+.sp-ui-btn[data-icon-only] { width: var(--sp-ui-control); padding: 0; }
+.sp-ui-btn[data-tone="primary"] { background: var(--sp-accg); color: var(--ap-accent-ink); box-shadow: var(--sp-glow); }
+.sp-ui-btn[data-tone="ghost"] { background: transparent; box-shadow: none; color: var(--ap-accent); }
+/* A destructive choice among others reads in red, quietly; the one that commits it (the confirm of an irreversible
+   action, a delete already asked about) is lit in red, the way the primary is lit in blue. */
+.sp-ui-btn[data-tone="danger"] { background: transparent; box-shadow: none; color: var(--ap-bad); }
+.sp-ui-btn[data-tone="danger"][data-commit] { background: linear-gradient(140deg, #e2525c, #b4232f 50%, #8f1b25); color: #fff; box-shadow: 0 8px 18px -8px rgb(180 35 47 / 0.5); }
+.sp-ui-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.sp-ui-btn-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; box-shadow: var(--sp-well-s); color: var(--ap-ink-2); font-size: 12px; line-height: 20px; text-align: center; }
+.sp-ui-btn[aria-pressed="true"], .sp-ui-btn[aria-expanded="true"] { box-shadow: var(--sp-well-s); color: var(--ap-accent); }
+@media (max-width: 760px) { .sp-ui-btn:has(> .sp-ui-btn-label) { width: var(--sp-ui-control); padding: 0; } .sp-ui-btn-label { display: none; } }
+/* A press sinks the button into the surface. */
+.sp-ui-btn:not(:disabled):active { translate: 0 0; box-shadow: var(--sp-well-s); }
+.sp-ui-btn:is([data-tone="primary"], [data-tone="danger"][data-commit]):not(:disabled):active { box-shadow: inset 0 2px 6px rgb(0 0 30 / 0.35); }
+/* An action that leads somewhere carries an arrow that leans forward on hover. */
+.sp-ui-btn-trail { flex: none; margin-inline-end: -2px; transition: translate var(--ap-d2) var(--ap-ease); }
+@media (hover: hover) { .sp-ui-btn:not(:disabled):hover .sp-ui-btn-trail { translate: 3px 0; } }
+[dir="rtl"] .sp-ui-btn-trail { scale: -1 1; }
+.sp-ui-btn:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 2px; }
+@media (hover: hover) {
+  .sp-ui-btn:not(:disabled):hover { translate: 0 -1px; }
+  .sp-ui-btn[data-tone="primary"]:not(:disabled):hover { box-shadow: 0 14px 28px -8px rgba(37, 99, 255, 0.6); }
+  .sp-ui-btn[data-tone="ghost"]:not(:disabled):hover { background: var(--ap-accent-tint); }
+  .sp-ui-btn[data-tone="danger"]:not(:disabled):hover { background: var(--ap-bad-tint); }
+  .sp-ui-btn[data-tone="danger"][data-commit]:not(:disabled):hover { background: linear-gradient(140deg, #e2525c, #b4232f 50%, #8f1b25); box-shadow: 0 12px 24px -8px rgb(180 35 47 / 0.55); }
+}
+.sp-ui-badge { display: inline-flex; align-items: center; max-width: 100%; height: 26px; padding: 0 11px; border-radius: 999px; font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: var(--sp-well-s); color: var(--ap-ink-2); flex: 0 1 auto; min-width: 0; }
+.sp-ui-badge[data-tone="info"] { color: var(--ap-info); }
+.sp-ui-badge[data-tone="good"] { color: var(--ap-good); }
+.sp-ui-badge[data-tone="warn"] { color: var(--ap-warn); }
+.sp-ui-badge[data-tone="bad"] { color: var(--ap-bad); }
+.sp-ui-figure { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: 4px; min-width: 0; }
+.sp-ui-figure > span { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--ap-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* The figure leads: large, heavy, tabular, rising into place; its change rides beside it on the same baseline. */
+.sp-ui-figure-line { display: grid; grid-template-columns: minmax(0, max-content); align-items: baseline; justify-content: start; column-gap: 10px; min-width: 0; }
+.sp-ui-figure-line[data-delta] { grid-template-columns: minmax(0, max-content) max-content; }
+.sp-ui-figure strong { font-size: 42px; line-height: 1.1; font-weight: 300; letter-spacing: -0.04em; white-space: nowrap; color: var(--ap-ink); animation: sp-ui-rise var(--ap-d4) var(--ap-ease) both; }
+.sp-ui-figure > small { font-size: 13px; line-height: 18px; color: var(--ap-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-ui-figure[data-tone="good"] strong { color: var(--ap-good); } .sp-ui-figure[data-tone="bad"] strong { color: var(--ap-bad); } .sp-ui-figure[data-tone="warn"] strong { color: var(--ap-warn); }
+.sp-ui-delta { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 11px 0 9px; border-radius: 999px; font-size: 12.5px; font-weight: 600; box-shadow: var(--sp-well-s); color: var(--ap-ink-2); white-space: nowrap; align-self: center; animation: sp-ui-pop var(--ap-d3) var(--ap-ease) calc(var(--ap-d4) + 120ms) both; }
+.sp-ui-delta[data-tone="good"] { color: var(--ap-good); }
+.sp-ui-delta[data-tone="bad"] { color: var(--ap-bad); }
+.sp-ui-delta[data-dir="down"] svg { rotate: 180deg; }
+.sp-ui-stat { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3px; min-width: 0; }
+.sp-ui-stat > span { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--ap-ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* Light and large, but never wider than its tile: it scales down with the tile it sits in. */
+.sp-ui-stat > strong { font-size: clamp(16px, 9cqi, 24px); line-height: 1.25; font-weight: 350; letter-spacing: -0.03em; color: var(--ap-ink); overflow-wrap: anywhere; }
+/* A measure is a capsule sunk into the surface: bare warp threads, woven in the accent up to the value. Past its
+   whole it is woven green. */
+.sp-ui-meter { position: relative; display: block; width: 100%; min-width: 48px; height: 16px; padding: 3px; border-radius: 999px; box-shadow: var(--sp-well-s); background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ap-ink) 11%, transparent) 0 1px, transparent 1px 4px); }
+.sp-ui-meter i { display: block; height: 100%; min-width: 4px; border-radius: 999px; background: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.2) 0 1.2px, transparent 1.2px 3.4px), var(--sp-accg); box-shadow: 0 4px 10px -4px rgb(37 99 255 / 0.65); transform-origin: left center; animation: sp-ui-loom 1300ms cubic-bezier(0.22, 1, 0.36, 1) 250ms both; }
+/* Weaving: the fill runs out from its start, a lit beater at its edge, and settles. */
+@keyframes sp-ui-loom { 0% { transform: scaleX(0); filter: brightness(1.35); } 75% { filter: brightness(1.1); } 100% { transform: scaleX(1); filter: none; } }
+/* The goal is a pin standing through the capsule, its head a raised ring. */
+.sp-ui-meter > u { position: absolute; top: -6px; bottom: -6px; width: 2px; margin-inline-start: -1px; border-radius: 2px; background: var(--ap-ink); animation: sp-ui-pop 420ms var(--ap-ease) 900ms both; }
+.sp-ui-meter > u::before { content: ""; position: absolute; top: -7px; left: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--ap-surface); box-shadow: var(--sp-raise-xs), inset 0 0 0 2px var(--ap-ink); }
+/* A value not in yet: soft bare warp, never an empty bar that reads as zero. */
+.sp-ui-meter[data-missing] { filter: blur(1.2px); background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ap-ink) 22%, transparent) 0 6px, transparent 6px 13px) 3px 50% / calc(55% - 6px) 6px no-repeat, repeating-linear-gradient(90deg, color-mix(in srgb, var(--ap-ink) 11%, transparent) 0 1px, transparent 1px 4px); }
+[dir="rtl"] .sp-ui-meter i { transform-origin: right center; }
+[dir="rtl"] .sp-ui-meter > u::before { left: auto; right: -4px; }
+.sp-ui-meter[data-over] i { background: repeating-linear-gradient(135deg, rgb(255 255 255 / 0.2) 0 1.2px, transparent 1.2px 3.4px), var(--sp-goodg); box-shadow: 0 4px 10px -4px rgb(11 138 85 / 0.6); }
+.sp-ui-meter i[data-tone="good"] { background: var(--sp-goodg); box-shadow: none; } .sp-ui-meter i[data-tone="warn"] { background: linear-gradient(140deg, #ffc35a, #c77700); box-shadow: none; } .sp-ui-meter i[data-tone="bad"] { background: linear-gradient(140deg, #f2626b, #a3202b); box-shadow: none; } .sp-ui-meter i[data-tone="neutral"] { background: #8a94a8; box-shadow: none; }
+/* A groove cut into the surface: a shadow line with the light catching its lower edge. */
+.sp-ui-divider { width: 100%; height: 2px; margin: 6px 0; border: 0; background: linear-gradient(180deg, color-mix(in srgb, var(--ap-ink) 11%, transparent) 50%, var(--sp-hi) 50%); }
+/* A loading/empty/error wrapper holds a page part; its parts keep the page rhythm. */
+.sp-liststate { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--sp-ui-gap-l); min-width: 0; }
+/* Nothing yet reads as an unsealed mark: an open, slowly turning ring beside the words, the same as a waiting stamp. */
+.sp-ui-empty { display: grid; grid-template-columns: 18px minmax(0, 1fr); align-items: center; column-gap: 12px; margin: 0; padding: 18px 0; font-size: 15px; color: var(--ap-ink-3); animation: sp-ui-fade var(--ap-d3) var(--ap-ease) both; }
+.sp-ui-empty::before { content: ""; width: 16px; height: 16px; border-radius: 50%; border: 1.5px dashed color-mix(in srgb, var(--ap-ink) 30%, transparent); animation: sp-ui-turn 8s linear infinite; }
+@keyframes sp-ui-turn { to { rotate: 360deg; } }
+@media (prefers-reduced-motion: reduce) { .sp-ui-empty::before { animation: none; } }
+
+/* ---------- Layout ---------- */
+.sp-ui-stack { display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; min-width: 0; }
+.sp-ui-row { display: flex; align-items: center; min-width: 0; }
+.sp-ui-row[data-grid] { display: grid; grid-template-columns: var(--sp-ui-row-cols); justify-content: start; }
+.sp-ui-row[data-grid][data-align="between"] { justify-content: space-between; }
+/* Words, tags and the Grow parts give way when the line is tight; buttons and controls keep their size, as in a flex row. */
+.sp-ui-row[data-grid] > :is(.sp-ui-text, .sp-ui-grow, .sp-ui-badge, .sp-ui-status, .sp-ui-figure, .sp-ui-stat) { min-width: 0; }
+.sp-ui-row[data-wrap] { flex-wrap: wrap; }
+.sp-ui-row[data-align="start"] { align-items: flex-start; } .sp-ui-row[data-align="end"] { align-items: flex-end; } .sp-ui-row[data-align="stretch"] { align-items: stretch; }
+.sp-ui-row[data-align="between"] { justify-content: space-between; }
+.sp-ui-stack[data-align="center"] { justify-items: center; } .sp-ui-stack[data-align="end"] { justify-items: end; }
+:is(.sp-ui-stack, .sp-ui-row, .sp-ui-grid)[data-gap="none"] { gap: 0; }
+:is(.sp-ui-stack, .sp-ui-row, .sp-ui-grid)[data-gap="s"] { gap: var(--sp-ui-gap-s); }
+:is(.sp-ui-stack, .sp-ui-row, .sp-ui-grid)[data-gap="m"] { gap: var(--sp-ui-gap-m); }
+:is(.sp-ui-stack, .sp-ui-row, .sp-ui-grid)[data-gap="l"] { gap: var(--sp-ui-gap-l); }
+.sp-ui-grow { flex: 1 1 0; min-width: 0; }
+/* The columns asked for while each stays at least --sp-ui-col-min wide; fewer on a narrow screen, never squeezed. */
+.sp-ui-grid { --sp-ui-col-min: 160px; display: grid; grid-template-columns: repeat(auto-fill, minmax(max(var(--sp-ui-col-min), calc((100% - (var(--sp-ui-cols, 2) - 1) * var(--sp-ui-gap-m)) / var(--sp-ui-cols, 2))), 1fr)); align-items: stretch; }
+.sp-ui-grid > * { min-width: 0; container-type: inline-size; }
+.sp-ui-split { display: grid; gap: var(--sp-ui-gap-m); align-items: stretch; }
+@container (max-width: 640px) { .sp-ui-grid { grid-template-columns: repeat(min(var(--sp-ui-cols, 2), 2), minmax(0, 1fr)); } .sp-ui-split { grid-template-columns: minmax(0, 1fr) !important; } }
+@container (max-width: 420px) { .sp-ui-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .sp-ui-grid { grid-template-columns: minmax(0, 1fr); } .sp-ui-split { grid-template-columns: minmax(0, 1fr) !important; } }
+.sp-ui-section { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--ap-surface); border-radius: var(--sp-ui-radius); box-shadow: var(--sp-raise); container-type: inline-size; animation: sp-ui-feed 560ms cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+/* The part to act on carries a faint wash of the accent at its head and floats a step higher. */
+.sp-ui-section[data-focus] { background: linear-gradient(180deg, var(--ap-accent-tint), var(--ap-surface) 140px); }
+.sp-ui-section-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; min-height: 60px; padding: 12px var(--sp-ui-section-pad) 4px; }
+/* What sits beside the title moves under it when the title needs the room. */
+.sp-ui-section-head > :last-child:not(:first-child) { min-width: 0; max-width: 100%; }
+.sp-ui-section-head > div:first-child { display: grid; gap: 2px; min-width: 0; }
+.sp-ui-section-body { flex: 1; min-height: 0; padding: 8px var(--sp-ui-section-pad) var(--sp-ui-section-pad); display: grid; grid-template-columns: minmax(0, 1fr); align-content: start; gap: var(--sp-ui-gap-m); }
+.sp-ui-section:not(:has(> .sp-ui-section-head)) > .sp-ui-section-body { padding-top: var(--sp-ui-section-pad); }
+.sp-ui-section[data-flush] > .sp-ui-section-body { padding: 0 0 4px; }
+/* A section inside a section sinks into it (a well), never a box in a box; one level deeper rises again. */
+.sp-ui-section .sp-ui-section { box-shadow: var(--sp-well); background: transparent; border-radius: 22px; }
+.sp-ui-section .sp-ui-section .sp-ui-section { box-shadow: var(--sp-raise-s); background: var(--ap-surface); border-radius: 18px; }
+.sp-ui-section .sp-ui-section .sp-ui-section .sp-ui-figure strong { font-size: 22px; line-height: 28px; }
+/* More tabs than the width holds scroll sideways, as tabs do everywhere; none is squeezed or cut. */
+.sp-ui-tablist { display: inline-flex; max-width: 100%; overflow-x: auto; scrollbar-width: none; gap: 2px; padding: 5px; margin-bottom: 14px; border-radius: 999px; box-shadow: var(--sp-well); }
+.sp-ui-tablist::-webkit-scrollbar { display: none; }
+.sp-ui-tablist button { position: relative; flex: none; white-space: nowrap; height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent; font: inherit; font-size: 14px; color: var(--ap-ink-2); cursor: pointer; transition: color var(--ap-d2) var(--ap-ease); }
+.sp-ui-tablist button > span { position: relative; }
+.sp-ui-tablist button[aria-selected="true"] { color: var(--ap-ink); font-weight: 550; }
+@media (hover: hover) { .sp-ui-tablist button:not([aria-selected="true"]):hover { color: var(--ap-ink); } }
+.sp-ui-tab-pill { position: absolute; inset: 0; border-radius: 999px; background: var(--ap-surface); box-shadow: var(--sp-raise-xs); }
+
+/* ---------- List ---------- */
+.sp-ui-list { list-style: none; margin: 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; }
+.sp-ui-list[data-size="s"] { max-height: var(--sp-ui-list-s); } .sp-ui-list[data-size="m"] { max-height: var(--sp-ui-list-m); } .sp-ui-list[data-size="l"] { max-height: var(--sp-ui-list-l); }
+.sp-ui-list > li { height: var(--sp-ui-row); display: flex; align-items: center; min-width: 0; overflow: hidden; }
+.sp-ui-list[data-tall] > li { height: 72px; }
+.sp-ui-list > li > * { flex: 1; min-width: 0; }
+/* A row is one line high: its words keep to one line, the tooltip and the detail hold the rest. */
+.sp-ui-list > li .sp-ui-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-ui-list > li .sp-ui-row { flex-wrap: nowrap; gap: var(--sp-ui-gap-s); }
+/* A row's last part (a value, a status) sits at the row's end, so trailing values line up down the list. */
+:is(.sp-ui-list > li, .sp-ui-list > li > .sp-ui-list-link) > .sp-ui-row > :last-child:not(:first-child) { margin-inline-start: auto; }
+/* The bar gives way first, then the name (down to three letters); figures and values keep their full width. */
+.sp-ui-list > li .sp-ui-row > .sp-ui-text:first-child { flex: 1 1 auto; min-width: min(40%, 3em); }
+/* In a crowded row the bar gives way before the name or a figure does, and never paints over them. */
+.sp-ui-list > li .sp-ui-grow { overflow: hidden; }
+.sp-ui-list > li .sp-ui-meter { min-width: 0; }
+.sp-ui-grow:has(> .sp-ui-meter) { container-type: inline-size; }
+@container (max-width: 40px) { .sp-ui-meter { display: none; } }
+.sp-ui-list > li .sp-ui-row > :is(.sp-ui-text, .sp-ui-badge):not(:first-child) { flex: none; }
+/* A figure in a row reads at text size: its label over its value, two lines inside the row height. */
+.sp-ui-list > li .sp-ui-figure { gap: 0; flex: none; text-align: end; }
+.sp-ui-list > li .sp-ui-figure strong { font-size: 15px; line-height: 20px; animation: none; }
+.sp-ui-list > li .sp-ui-figure > small { display: none; }
+.sp-ui-list > li .sp-ui-stat { gap: 0; text-align: end; }
+.sp-ui-list > li .sp-ui-stat > strong { font-size: 15px; line-height: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.sp-ui-list > li .sp-ui-stat > span { font-size: 12px; line-height: 16px; }
+.sp-ui-list > li + li { box-shadow: inset 0 1px 0 var(--ap-hairline); }
+/* Rows arrive one after another, the first dozen; the rest are simply there. */
+.sp-ui-list > li { animation: sp-ui-rise var(--ap-d3) var(--ap-ease) both; }
+.sp-ui-list > li:nth-child(n + 13) { animation: none; }
+.sp-ui-list > li:nth-child(2) { animation-delay: 24ms; } .sp-ui-list > li:nth-child(3) { animation-delay: 48ms; } .sp-ui-list > li:nth-child(4) { animation-delay: 72ms; }
+.sp-ui-list > li:nth-child(5) { animation-delay: 96ms; } .sp-ui-list > li:nth-child(6) { animation-delay: 120ms; } .sp-ui-list > li:nth-child(7) { animation-delay: 144ms; }
+.sp-ui-list > li:nth-child(8) { animation-delay: 168ms; } .sp-ui-list > li:nth-child(9) { animation-delay: 192ms; } .sp-ui-list > li:nth-child(10) { animation-delay: 216ms; }
+.sp-ui-list > li:nth-child(11) { animation-delay: 240ms; } .sp-ui-list > li:nth-child(12) { animation-delay: 264ms; }
+.sp-ui-section[data-flush] .sp-ui-list > li { padding: 0 var(--sp-ui-edge); }
+/* A linked row is the link edge to edge: one hover and one focus ring for the whole row, padded like any row. */
+.sp-ui-list[data-links] > li { padding: 0; }
+.sp-ui-list-link { display: flex; align-items: center; width: 100%; height: 100%; min-width: 0; padding: 0 8px; border: 0; background: transparent; font: inherit; color: inherit; text-align: start; text-decoration: none; cursor: pointer; transition: background-color var(--ap-d2) var(--ap-ease); }
+.sp-ui-list-link > * { flex: 1; min-width: 0; }
+.sp-ui-section[data-flush] .sp-ui-list-link { padding: 0 var(--sp-ui-edge); }
+.sp-ui-list-link:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: -2px; }
+@media (hover: hover) { .sp-ui-list-link:hover { background: rgb(255 255 255 / 0.4); } }
+.sp-ui-section[data-flush] .sp-ui-empty { padding-inline: var(--sp-ui-edge); }
+
+/* ---------- Chart ---------- */
+/* Ink on a ledger: the data is the only loud thing. Hairline grid, round ticks, the latest period lit, marks that grow
+   from one baseline, lines that draw like a pen and end in their latest value. */
+.sp-ui-chart { margin: 0; display: grid; gap: 12px; min-width: 0; border-radius: 8px; outline: none; }
+.sp-ui-chart:focus-visible { box-shadow: 0 0 0 2px var(--ap-surface), 0 0 0 4px var(--ap-accent); }
+.sp-ui-chart-plot { position: relative; min-width: 0; }
+.sp-ui-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.sp-ui-chart-grid { stroke: var(--ap-hairline); stroke-width: 1; shape-rendering: crispEdges; }
+.sp-ui-chart-grid[data-zero] { stroke: var(--sp-rule); }
+.sp-ui-chart-axis { font-size: 11.5px; fill: var(--ap-ink-3); font-variant-numeric: tabular-nums; }
+.sp-ui-chart-axis[data-now] { fill: var(--ap-accent); font-weight: 650; }
+.sp-ui-chart-axis[data-scale] { font-family: var(--sp-mono); font-size: 11px; }
+.sp-ui-chart-hit { fill: transparent; cursor: crosshair; }
+.sp-ui-chart-bar { transform-box: fill-box; transform-origin: 50% 100%; animation: sp-ui-grow 720ms cubic-bezier(0.22, 1.18, 0.36, 1) both; transition: opacity var(--ap-d2) var(--ap-ease); }
+.sp-ui-chart-bar[data-down] { transform-origin: 50% 0; }
+.sp-ui-chart-bar[data-dim] { opacity: 0.38; }
+.sp-ui-chart-line { fill: none; stroke: var(--sp-ink); stroke-width: 3; filter: drop-shadow(0 5px 6px color-mix(in srgb, var(--sp-ink) 28%, transparent)); stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; animation: sp-ui-draw 1100ms cubic-bezier(0.45, 0, 0.2, 1) both; }
+.sp-ui-chart-area { animation: sp-ui-wash 900ms var(--ap-ease) 260ms both; }
+.sp-ui-chart-dot { fill: var(--sp-ink); stroke: var(--ap-surface); stroke-width: 2; transform-box: fill-box; transform-origin: center; animation: sp-ui-pop 360ms var(--ap-ease) both; }
+/* The latest value is a raised knob with the series ink lit in its centre. */
+.sp-ui-chart-end { fill: var(--sp-ink); stroke: var(--ap-surface); stroke-width: 5; filter: drop-shadow(2px 3px 3px rgb(28 44 78 / 0.28)); transform-box: fill-box; transform-origin: center; animation: sp-ui-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1) 1000ms both; }
+.sp-ui-chart-cross { stroke: color-mix(in srgb, var(--ap-ink) 28%, transparent); stroke-width: 1; shape-rendering: crispEdges; animation: sp-ui-fade 120ms var(--ap-ease) both; }
+.sp-ui-chart-mark { fill: var(--ap-surface); stroke: var(--sp-ink); stroke-width: 2.5; pointer-events: none; }
+/* The readout: the value leads, the series name follows, keyed by a short stroke or swatch. */
+.sp-ui-chart-tip { position: absolute; top: 0; z-index: 2; display: grid; gap: 6px; min-width: 168px; max-width: 280px; padding: 10px 14px 11px; border-radius: 16px; background: var(--ap-surface); box-shadow: var(--sp-raise-s); pointer-events: none; animation: sp-ui-fade var(--ap-d1) var(--ap-ease) both; transition: left 140ms var(--ap-ease); }
+.sp-ui-chart-tip[data-side="right"] { translate: 14px 0; } .sp-ui-chart-tip[data-side="left"] { translate: calc(-100% - 14px) 0; }
+.sp-ui-chart-tip-x { font-size: 12px; font-weight: 600; color: var(--ap-ink-3); }
+.sp-ui-chart-tip-row { display: grid; grid-template-columns: 14px auto minmax(0, 1fr); align-items: center; column-gap: 8px; font-size: 13px; color: var(--ap-ink-3); }
+.sp-ui-chart-tip-row b { font-size: 14px; font-weight: 650; color: var(--ap-ink); }
+.sp-ui-chart-tip-row > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-ui-chart-key { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: var(--sp-key); }
+.sp-ui-chart-key[data-kind="fill"] { width: 10px; height: 10px; border-radius: 3px; }
+.sp-ui-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ap-ink-2); }
+.sp-ui-legend span { display: inline-flex; align-items: center; gap: 8px; }
+@keyframes sp-ui-grow { from { transform: scaleY(0); } }
+@keyframes sp-ui-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes sp-ui-wash { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .sp-ui-chart-bar, .sp-ui-chart-line, .sp-ui-chart-area, .sp-ui-chart-dot, .sp-ui-chart-end, .sp-ui-chart-tip, .sp-ui-chart-cross, .sp-ui-chart-knob, .sp-ui-chart-bubble, .sp-ui-chart-note { animation: none; } }
+
+/* ---------- Table ---------- */
+.sp-ui-table { background: var(--ap-surface); border-radius: var(--sp-ui-radius); box-shadow: var(--sp-raise); min-width: 0; }
+/* Wider than the page: it scrolls inside, and a shade at the hidden edge says there is more. */
+.sp-ui-table-scroll { overflow-x: auto; border-radius: var(--sp-ui-radius);
+  background: linear-gradient(to right, var(--ap-surface) 30%, transparent) left / 24px 100% no-repeat local, linear-gradient(to left, var(--ap-surface) 30%, transparent) right / 24px 100% no-repeat local,
+    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 0.10), transparent) left / 10px 100% no-repeat scroll, radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 0.10), transparent) right / 10px 100% no-repeat scroll; }
+.sp-ui-table-scroll:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: -2px; border-radius: var(--sp-ui-radius); }
+.sp-ui-table table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.sp-ui-table th { height: var(--sp-ui-head); padding: 0 var(--sp-ui-pad-x); text-align: start; vertical-align: middle; font-size: 12.5px; font-weight: 600; color: var(--ap-ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: inset 0 -1px 0 var(--ap-hairline); }
+.sp-ui-table td { height: var(--sp-ui-row); padding: 0 var(--sp-ui-pad-x); vertical-align: middle; color: var(--ap-ink); overflow: hidden; }
+.sp-ui-table[data-tight] td { height: var(--sp-ui-row-tight); }
+.sp-ui-table :is(th, td):first-child { padding-inline-start: var(--sp-ui-edge); }
+.sp-ui-table :is(th, td):last-child { padding-inline-end: var(--sp-ui-edge); }
+.sp-ui-table tbody tr + tr > td { box-shadow: inset 0 1px 0 var(--ap-hairline); }
+.sp-ui-table :is(th, td):is([data-kind="num"], [data-kind="money"]) { text-align: end; font-variant-numeric: tabular-nums; }
+.sp-ui-table :is(th, td):is([data-kind="actions"], [data-kind="icon"]) { text-align: end; }
+.sp-ui-table td[data-kind="code"] { font-family: var(--sp-mono); font-size: 12.5px; color: var(--ap-ink-2); }
+.sp-ui-table td[data-kind="date"] { font-variant-numeric: tabular-nums; color: var(--ap-ink-2); }
+.sp-ui-cell { max-height: calc(var(--sp-ui-row) - 8px); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.sp-ui-table :is([data-kind="actions"], [data-kind="icon"]) .sp-ui-cell { display: flex; justify-content: flex-end; gap: 2px; overflow: visible; }
+.sp-ui-table :is([data-kind="actions"], [data-kind="icon"]) .sp-ui-btn { height: 36px; padding: 0 10px; background: transparent; color: var(--ap-accent); }
+.sp-ui-table :is([data-kind="actions"], [data-kind="icon"]) .sp-ui-btn[data-icon-only] { width: 36px; padding: 0; color: var(--ap-ink-3); }
+.sp-ui-table :is([data-kind="actions"], [data-kind="icon"]) .sp-ui-btn[data-tone="danger"] { color: var(--ap-bad); }
+@media (hover: hover) { .sp-ui-table :is([data-kind="actions"], [data-kind="icon"]) .sp-ui-btn:not(:disabled):hover { background: var(--ap-accent-tint); } }
+.sp-ui-table tr[data-click] { cursor: pointer; }
+.sp-ui-table tr[data-click]:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: -2px; }
+@media (hover: hover) { .sp-ui-table tbody tr[data-click]:hover > td { background: rgb(255 255 255 / 0.4); } }
+.sp-ui-table tr[data-on] > td { background: rgb(255 255 255 / 0.6); }
+.sp-ui-table tr.sp-ui-pad > td { box-shadow: none; }
+.sp-ui-detail > td { height: auto; padding: 0; box-shadow: var(--sp-well); }
+.sp-ui-detail-body { max-height: var(--sp-ui-detail); overflow: auto; padding: 14px var(--sp-ui-edge); font-size: 14px; line-height: 20px; white-space: normal; }
+.sp-ui-pager { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-height: 52px; padding: 6px var(--sp-ui-edge); box-shadow: inset 0 1px 0 var(--ap-hairline); font-size: 13px; color: var(--ap-ink-3); }
+.sp-ui-pager > span:first-child { margin-inline-end: auto; }
+.sp-ui-table td .sp-input { height: 36px; min-height: 36px; width: 100%; }
+
+.sp-ui-sort { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; height: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; cursor: pointer; }
+.sp-ui-sort > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (hover: hover) { .sp-ui-sort:hover { color: var(--ap-ink); } }
+.sp-ui-table th:is([data-kind="num"], [data-kind="money"]) .sp-ui-sort { flex-direction: row-reverse; }
+/* A total sits under the ledger's double rule, the way accounts close a column. */
+.sp-ui-table tfoot td { height: calc(var(--sp-ui-row-tight) + 4px); font-weight: 650; font-variant-numeric: tabular-nums; box-shadow: inset 0 1px 0 var(--sp-rule), inset 0 4px 0 var(--ap-surface), inset 0 5px 0 var(--sp-rule); padding-top: 5px; }
+.sp-ui-table tbody tr { animation: sp-ui-fade var(--ap-d3) var(--ap-ease) both; }
+.sp-ui-table tbody tr:nth-child(n + 13) { animation: none; }
+.sp-ui-table tbody tr:nth-child(2) { animation-delay: 20ms; } .sp-ui-table tbody tr:nth-child(3) { animation-delay: 40ms; } .sp-ui-table tbody tr:nth-child(4) { animation-delay: 60ms; }
+.sp-ui-table tbody tr:nth-child(5) { animation-delay: 80ms; } .sp-ui-table tbody tr:nth-child(6) { animation-delay: 100ms; } .sp-ui-table tbody tr:nth-child(7) { animation-delay: 120ms; }
+.sp-ui-table tbody tr:nth-child(8) { animation-delay: 140ms; } .sp-ui-table tbody tr:nth-child(9) { animation-delay: 160ms; } .sp-ui-table tbody tr:nth-child(10) { animation-delay: 180ms; }
+.sp-ui-table tbody tr:nth-child(11) { animation-delay: 200ms; } .sp-ui-table tbody tr:nth-child(12) { animation-delay: 220ms; }
+/* Inside an answer card or a section of one, a table is part of that surface: no surface of its own. */
+:is(.sp-lego, .sp-b-section, .sp-ui-section) .sp-ui-table { background: transparent; box-shadow: none; border-radius: 0; }
+
+/* In an answer's list, the name of each item keeps to one line; its tooltip and the row's detail hold the rest. */
+
+/* Smart fill (components/fill.ts): a surface's last scrolling list takes the height left beneath it. */
+[data-fill-chain] { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+.sp-ui-list[data-fill] { flex: 1 1 auto; max-height: none; min-height: var(--sp-ui-list-s); }
+
+/* A list whose rows have the same parts lines them up as columns (List measures it): the flexible part (the first
+   words, or a bar) takes the room, the rest fit their content, the same width on every row. */
+.sp-ui-list[data-cols] { display: grid; grid-template-columns: var(--sp-ui-list-cols); align-content: start; column-gap: var(--sp-ui-gap-m); }
+.sp-ui-list[data-cols] > li, .sp-ui-list[data-cols] > li > .sp-ui-list-link { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: center; }
+.sp-ui-list[data-cols] > li > .sp-ui-row, .sp-ui-list[data-cols] > li > .sp-ui-list-link > .sp-ui-row { display: contents; }
+.sp-ui-list[data-cols] > li .sp-ui-row > [data-col] { min-width: 0; overflow: hidden; }
+.sp-ui-list[data-cols] > li .sp-ui-row > [data-col="fit"] { justify-self: end; text-align: end; max-width: 100%; }
+
+/* ---------- Status ---------- */
+/* A record's state: its knot, drawn in its tone, and the word, in a small well. States still in motion tug. */
+.sp-ui-status { --sp-ui-status-ink: var(--ap-ink-3); display: inline-grid; grid-template-columns: 17px minmax(0, auto); align-items: center; column-gap: 7px; max-width: 100%; height: 30px; padding: 0 12px 0 9px; border-radius: 999px; box-shadow: var(--sp-well-s); color: var(--sp-ui-status-ink); font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-ui-status[data-tone="info"] { --sp-ui-status-ink: var(--ap-info); } .sp-ui-status[data-tone="good"] { --sp-ui-status-ink: var(--ap-good); }
+.sp-ui-status[data-tone="warn"] { --sp-ui-status-ink: var(--ap-warn); } .sp-ui-status[data-tone="bad"] { --sp-ui-status-ink: var(--ap-bad); }
+.sp-ui-status, .sp-ui-badge { justify-self: start; }
+.sp-ui-status > svg { width: 17px; height: 16px; overflow: visible; }
+.sp-ui-status > svg path { fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: sp-ui-tie 800ms ease-out 300ms forwards; }
+.sp-ui-status[data-live] > svg { transform-origin: 30% 60%; animation: sp-ui-tug 2.4s ease-in-out 1.2s infinite; }
+@keyframes sp-ui-tie { to { stroke-dashoffset: 0; } }
+@keyframes sp-ui-tug { 0%, 100% { rotate: 0deg; } 50% { rotate: -9deg; } }
+
+/* ---------- Bar line ---------- */
+/* A bar with a name reads as two lines: the name and its figure, the capsule under them the full width. Without a
+   name, the capsule and its figure share one line. */
+.sp-ui-barline { display: grid; grid-template-columns: minmax(64px, 1fr); align-items: center; gap: 8px 12px; min-width: 0; width: 100%; }
+.sp-ui-barline[data-figure] { grid-template-columns: minmax(64px, 1fr) max-content; }
+.sp-ui-barline[data-label] { grid-template-columns: minmax(0, 1fr) max-content; align-items: baseline; }
+.sp-ui-barline[data-label] > .sp-ui-meter { grid-column: 1 / -1; grid-row: 2; }
+.sp-ui-barline-figure { font-size: 14.5px; font-weight: 650; color: var(--ap-ink); text-align: end; white-space: nowrap; }
+.sp-ui-barline-figure[data-missing] { font-weight: 500; font-style: italic; color: var(--ap-ink-3); }
+.sp-ui-list > li .sp-ui-barline[data-label] { row-gap: 6px; }
+
+/* ---------- Parts of a whole ---------- */
+.sp-ui-parts { display: grid; gap: 12px; min-width: 0; }
+.sp-ui-parts-bar { display: flex; gap: 3px; height: 24px; padding: 3px; border-radius: 999px; box-shadow: var(--sp-well-s); }
+.sp-ui-parts-bar > i { flex-basis: 0; min-width: 8px; border-radius: 999px; transform-origin: left center; animation: sp-ui-loom 1100ms cubic-bezier(0.22, 1, 0.36, 1) both; }
+.sp-ui-parts-keys { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 10px 12px; margin: 0; }
+.sp-ui-parts-keys > div { display: grid; gap: 2px; min-width: 0; }
+.sp-ui-parts-keys dt { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ap-ink-3); min-width: 0; }
+.sp-ui-parts-keys dt > i { flex: none; width: 8px; height: 8px; border-radius: 50%; }
+.sp-ui-parts-keys dd { margin: 0; font-size: 15px; font-weight: 600; }
+
+/* ---------- Ranked ---------- */
+.sp-ui-ranked { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: start; column-gap: 8px; min-width: 0; }
+.sp-ui-rank { font-family: var(--sp-serif); font-size: 24px; line-height: 22px; color: var(--ap-ink-3); }
+
+/* ---------- A number with its bar, in a table cell ---------- */
+.sp-ui-cellbar { display: grid; grid-template-columns: max-content minmax(32px, 1fr); align-items: center; gap: 10px; }
+.sp-ui-cellbar > .sp-ui-meter { height: 12px; padding: 3px; min-width: 32px; }
+
+/* Facts in a grid sink into the surface, one well each. */
+.sp-ui-grid > .sp-ui-stat { padding: 14px 16px; border-radius: 20px; box-shadow: var(--sp-well); }
+
+/* ---------- Motion vocabulary ---------- */
+@keyframes sp-ui-rise { from { opacity: 0; translate: 0 6px; } }
+@keyframes sp-ui-fade { from { opacity: 0; } }
+@keyframes sp-ui-pop { from { opacity: 0; scale: 0.85; } }
+@keyframes sp-ui-fill { from { scale: 0 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .sp-ui-callout, .sp-ui-figure strong, .sp-ui-delta, .sp-ui-meter i, .sp-ui-section, .sp-ui-list > li, .sp-ui-table tbody tr { animation: none; }
+}
+
+/* ---------- Narrow measure ---------- */
+@container (max-width: 440px) {
+  /* A row of many parts becomes two lines: the name across the top, its figures and state beneath. */
+  .sp-ui-list[data-cols] { display: block; }
+  .sp-ui-list[data-cols] > li, .sp-ui-list[data-cols] > li > .sp-ui-list-link { display: block; height: auto; padding-block: 10px; }
+  .sp-ui-list[data-cols] > li > .sp-ui-row, .sp-ui-list[data-cols] > li > .sp-ui-list-link > .sp-ui-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; }
+  .sp-ui-list[data-cols] > li .sp-ui-row > [data-col="grow"]:first-child { flex: 1 0 100%; }
+  .sp-ui-list[data-cols] > li .sp-ui-row > [data-col="fit"] { justify-self: auto; text-align: start; overflow: visible; }
+  .sp-ui-list[data-cols] > li .sp-ui-row > [data-col="fit"]:last-child { margin-inline-start: auto; }
+  /* Tables keep their columns, each narrower: a two- or three-column table fits a phone without scrolling. */
+  .sp-ui-table { --sp-ui-w-title: 112px; --sp-ui-w-wide: 140px; --sp-ui-w-text: 104px; --sp-ui-w-code: 84px; --sp-ui-w-num: 60px; --sp-ui-w-money: 116px; --sp-ui-w-date: 92px; --sp-ui-w-badge: 96px; --sp-ui-w-status: 108px; --sp-ui-pad-x: 10px; --sp-ui-edge: 12px; }
+}
+
+/* ---------- Thread (provenance) ---------- */
+/* An answer's colophon: each source in mono, keyed by its system's thread, appearing in turn. */
+.sp-ui-thread { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; margin: 8px 0 0; font-family: var(--sp-mono); font-size: 11.5px; line-height: 16px; color: var(--ap-ink-3); font-variant-numeric: tabular-nums; }
+.sp-ui-thread > span { display: inline-flex; align-items: center; gap: 7px; min-width: 0; animation: sp-ui-fade 500ms var(--ap-ease) 700ms both; }
+.sp-ui-thread > span > i { flex: none; width: 12px; height: 2px; border-radius: 2px; }
+.sp-ui-thread > span:nth-of-type(2) { animation-delay: 800ms; } .sp-ui-thread > span:nth-of-type(n + 3) { animation-delay: 900ms; }
+
+/* The selvedge: the threads of the systems a section was woven from, running down its edge as it appears. */
+.sp-ui-selv { position: absolute; inset-inline-start: 18px; top: 28px; bottom: 28px; display: flex; gap: 2px; pointer-events: none; }
+.sp-ui-selv > i { width: 2px; border-radius: 2px; transform-origin: top; animation: sp-ui-descend 800ms var(--ap-ease) 200ms both; }
+.sp-ui-selv > i:nth-child(2) { animation-delay: 300ms; } .sp-ui-selv > i:nth-child(n + 3) { animation-delay: 400ms; }
+.sp-ui-section[data-threads] > :is(.sp-ui-section-head, .sp-ui-section-body) { padding-inline-start: calc(var(--sp-ui-section-pad) + 16px); }
+@keyframes sp-ui-descend { from { scale: 1 0; } }
+@media (prefers-reduced-motion: reduce) { .sp-ui-thread > span, .sp-ui-selv > i, .sp-ui-status > svg path, .sp-ui-status[data-live] > svg { animation: none; stroke-dashoffset: 0; } }
+
+/* ---------- Bukti: the rest of the primitives ---------- */
+/* Wet ink: a heading or a paragraph arrives a shade of the accent and dries to its ink. A heading also settles from a
+   soft impression to a sharp one. Rows of a list or a table are data, not prose: they arrive dry. */
+@keyframes sp-ui-dry { from { color: color-mix(in srgb, var(--ap-accent) 62%, var(--ap-ink)); } }
+@keyframes sp-ui-settle { from { opacity: 0; filter: blur(3px); translate: 0 3px; } 40% { opacity: 1; } }
+.sp-ui-title:is([data-level="1"], [data-level="2"]) { animation: sp-ui-settle 520ms var(--ap-ease) both, sp-ui-dry 1400ms ease-out both; }
+.sp-ui-text { animation: sp-ui-dry 1200ms ease-out both; }
+:is(.sp-ui-list, .sp-ui-table, .sp-ui-row, .sp-ui-figure, .sp-ui-stat) .sp-ui-text, :is(.sp-ui-list, .sp-ui-table) .sp-ui-title { animation: none; }
+
+/* The remark's sign is pressed into its disc once the strip has landed. */
+.sp-ui-callout-mark { animation: sp-ui-pop 360ms cubic-bezier(0.34, 1.56, 0.64, 1) 300ms both; }
+
+/* A surface is fed out like a slip from a printer: revealed from its top edge down, shadow and all. */
+@keyframes sp-ui-feed { from { clip-path: inset(-32px -32px 100% -32px round var(--sp-ui-radius)); } to { clip-path: inset(-32px round var(--sp-ui-radius)); } }
+/* Tiles in a grid are fed one after another. */
+.sp-ui-grid > :nth-child(2) { animation-delay: 70ms; } .sp-ui-grid > :nth-child(3) { animation-delay: 140ms; } .sp-ui-grid > :nth-child(4) { animation-delay: 210ms; }
+.sp-ui-grid > :nth-child(5) { animation-delay: 280ms; } .sp-ui-grid > :nth-child(6) { animation-delay: 350ms; } .sp-ui-grid > :nth-child(n + 7) { animation-delay: 400ms; }
+
+/* The ruler: pointing at a row lays a short accent rule at its start, the way a finger runs along a ledger line. The
+   chosen row keeps it. Tables and lists share it. */
+.sp-ui-list-link { position: relative; }
+.sp-ui-list-link::before { content: ""; position: absolute; inset-block: 12px; inset-inline-start: 0; width: 2px; border-radius: 2px; background: var(--ap-accent); scale: 1 0; transition: scale var(--ap-d2) var(--ap-ease); }
+.sp-ui-list-link:is(:hover, :focus-visible)::before { scale: 1 1; }
+.sp-ui-table tbody tr > td:first-child { transition: box-shadow var(--ap-d2) var(--ap-ease); }
+@media (hover: hover) { .sp-ui-table tbody tr[data-click]:hover > td:first-child { box-shadow: inset 2px 0 0 var(--ap-accent), inset 0 1px 0 var(--ap-hairline); } }
+.sp-ui-table tbody tr[data-on] > td:first-child { box-shadow: inset 2px 0 0 var(--ap-accent), inset 0 1px 0 var(--ap-hairline); }
+[dir="rtl"] .sp-ui-table tbody tr[data-click]:is(:hover, [data-on]) > td:first-child { box-shadow: inset -2px 0 0 var(--ap-accent), inset 0 1px 0 var(--ap-hairline); }
+/* The column the rows are sorted by is the one being read: it carries a faint wash and its header reads in ink. */
+.sp-ui-table td[data-sorted] { background: rgb(255 255 255 / 0.28); }
+.sp-ui-table th[data-sorted] { color: var(--ap-ink); }
+
+/* Reconciliation pass: one accent line sweeps the rows once as they land (and on each new page), then is gone. */
+.sp-ui-table { position: relative; }
+.sp-ui-table-scan { position: absolute; inset: 0; z-index: 1; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--ap-accent) 7%, transparent) 85%, color-mix(in srgb, var(--ap-accent) 55%, transparent) 98%, transparent) 0 -56px / 100% 56px no-repeat;
+  animation: sp-ui-scan 1100ms cubic-bezier(0.45, 0, 0.25, 1) 160ms both; }
+@keyframes sp-ui-scan { from { opacity: 1; background-position-y: -56px; } 85% { opacity: 1; } to { opacity: 0; background-position-y: calc(100% + 56px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-ui-title, .sp-ui-text, .sp-ui-callout-mark { animation: none; }
+  .sp-ui-table-scan { display: none; }
+}
+
+/* ---------- Chart: the lit series, its knob and its readout ---------- */
+.sp-ui-chart-series[data-lead] .sp-ui-chart-line { stroke-width: 4; filter: drop-shadow(0 6px 8px rgb(37 99 255 / 0.3)); }
+.sp-ui-chart-track { fill: color-mix(in srgb, var(--ap-ink) 5%, var(--ap-surface)); filter: drop-shadow(1px 1px 1.5px rgb(28 44 78 / 0.14)); }
+.sp-ui-chart-bar[data-lead] { filter: drop-shadow(0 4px 6px rgb(37 99 255 / 0.3)); }
+.sp-ui-chart-drop { stroke: #2563ff; stroke-opacity: 0.3; stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; animation: sp-ui-fade 500ms var(--ap-ease) 1300ms both; }
+/* The latest point is a raised knob with the lit ink in its centre; its value sits in a raised bubble above it. */
+.sp-ui-chart-knob { position: absolute; width: 24px; height: 24px; margin: -12px 0 0 -12px; border-radius: 50%; background: var(--ap-surface); box-shadow: var(--sp-raise-xs); display: grid; place-items: center; pointer-events: none; animation: sp-ui-pop 500ms var(--ap-ease) 1300ms both; }
+.sp-ui-chart-knob::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--sp-accg); box-shadow: 0 0 10px rgb(37 99 255 / 0.7); }
+.sp-ui-chart-bubble { position: absolute; z-index: 1; translate: -50% calc(-100% - 24px); display: grid; gap: 1px; padding: 9px 14px; border-radius: 16px; background: var(--ap-surface); box-shadow: var(--sp-raise-s); white-space: nowrap; font-size: 12.5px; color: var(--ap-ink-3); pointer-events: none; animation: sp-ui-pop 500ms var(--ap-ease) 1450ms both; }
+.sp-ui-chart-bubble[data-edge] { translate: calc(-100% + 22px) calc(-100% - 24px); }
+.sp-ui-chart-bubble { max-width: min(240px, 70%); }
+.sp-ui-chart-bubble > span { overflow: hidden; text-overflow: ellipsis; }
+.sp-ui-chart-bubble b { font-size: 18px; line-height: 22px; font-weight: 600; letter-spacing: -0.015em; color: var(--ap-ink); }
+.sp-ui-chart-bubble::after { content: ""; position: absolute; left: 50%; bottom: -6px; width: 12px; height: 12px; background: var(--ap-surface); rotate: 45deg; translate: -50% 0; box-shadow: 4px 4px 6px -3px var(--sp-lo); }
+.sp-ui-chart-bubble[data-edge]::after { left: calc(100% - 22px); }
+/* What the chart shows, written beside the point it is about, in serif. */
+.sp-ui-chart-note { position: absolute; margin: 0; max-width: 22ch; translate: 12px calc(-100% - 16px); font-family: var(--sp-serif); font-style: italic; font-size: 18px; line-height: 21px; color: var(--ap-ink-2); pointer-events: none; animation: sp-ui-rise 600ms var(--ap-ease) 1600ms both; }
+.sp-ui-chart-note[data-edge] { translate: calc(-100% - 12px) calc(-100% - 16px); text-align: end; }
+.sp-ui-chart-notedot { fill: var(--ap-surface); stroke: var(--ap-ink-2); stroke-width: 2; animation: sp-ui-pop 420ms var(--ap-ease) 1500ms both; transform-box: fill-box; transform-origin: center; }
+/* On a narrow chart there is no room beside the point: the note reads as a caption under the plot. */
+.sp-ui-chart { container-type: inline-size; }
+.sp-ui-chart-note[data-at="caption"] { display: none; position: static; translate: none; max-width: none; margin: 0; }
+@container (max-width: 520px) { .sp-ui-chart-note[data-at="point"] { display: none; } .sp-ui-chart-note[data-at="caption"] { display: block; } }
+
+/* Held until seen (components/Reveal.tsx): a panel that has not scrolled into view yet keeps its entrance paused. */
+html[data-reveal] :is(.sp-ui-section, .ap-brick-surface):not([data-seen]),
+html[data-reveal] :is(.sp-ui-section, .ap-brick-surface):not([data-seen]) * { animation-play-state: paused !important; }
+
+/* A row of four or more parts needs more room before it fits on one line: below this it reads as two lines too. */
+@container (max-width: 640px) {
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) { display: block; }
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li, .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li > .sp-ui-list-link { display: block; height: auto; padding-block: 10px; }
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li .sp-ui-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li .sp-ui-row > [data-col="grow"]:first-child { flex: 1 0 100%; }
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li .sp-ui-row > [data-col="fit"] { justify-self: auto; text-align: start; overflow: visible; }
+  .sp-ui-list:is([data-cols="4"], [data-cols="5"], [data-cols="6"]) > li .sp-ui-row > [data-col="fit"]:last-child { margin-inline-start: auto; }
+}
+
+/* In a list lined up as columns a fact's name is said once, on the first row, the way a table names its columns. */
+.sp-ui-list[data-cols] > li:not(:first-child) .sp-ui-stat > span { display: none; }
+.sp-ui-list[data-cols] > li:first-child { height: auto; min-height: var(--sp-ui-row); padding-block: 6px; }
+
+/* A column's name is read whole: it wraps to a second line in a narrow column instead of being cut ("Apr 2025 to Mar 2026"). */
+.sp-ui-table th { height: auto; min-height: var(--sp-ui-head); padding-block: 8px; white-space: normal; vertical-align: bottom; line-height: 16px; }
+.sp-ui-table th > span, .sp-ui-table th .sp-ui-sort > span { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; overflow-wrap: anywhere; }
+.sp-ui-table th .sp-ui-sort { height: auto; align-items: flex-end; text-align: inherit; }

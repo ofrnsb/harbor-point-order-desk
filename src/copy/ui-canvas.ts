@@ -1,0 +1,35 @@
+// The canvas beside the conversation, and the access trail under each answer.
+export const CANVAS = {
+  kinds: { table: "Table", board: "Board", calendar: "Calendar", chart: "Chart", list: "List", compare: "Comparison", timeline: "Timeline", metrics: "Figures" },
+  built: "Built view",
+  layout: "Layout",
+  block: "Block",
+  openHere: "open on the canvas",
+  openThere: "open on the canvas",
+  title: "Canvas",
+  pinnedTitle: "Already on your start screen; open it there for the latest data",
+  pinTitle: "Keep on your start screen, reopened with the latest data",
+  pinned: "Pinned",
+  pin: "Pin",
+  downloadTitle: "Download as CSV for Excel",
+  download: "Download",
+  printTitle: "Print or save as PDF",
+  print: "Print",
+  hide: "Hide",
+  rows: (n: string) => `${n} rows`,
+  tabsAria: "Views on the canvas",
+  emptyTitle: "The canvas is empty",
+  emptyBody: "When the agent shows data, its tables, boards, calendars and charts appear here, and the text stays in the conversation.",
+} as const;
+
+export const TRAIL = {
+  ops: { select: "rows", aggregate: "groups", write: "written", denied: "denied" },
+  outOfScope: "out of scope",
+  model: "Model",
+  external: "outside the network",
+  local: "local",
+  rerouted: "rerouted for Restricted data",
+  title: "Access trail",
+  systems: (n: number) => `${n} systems`,
+  accesses: (n: number) => `${n} accesses`,
+} as const;

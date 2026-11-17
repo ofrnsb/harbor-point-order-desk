@@ -1,0 +1,15 @@
+# systemd user unit on erion: the Order Desk on 127.0.0.1:3150, published through the dodanko-main Cloudflare Tunnel.
+# Installed by deploy/erion/bootstrap.sh; restarted by deploy/erion/deploy.sh on every push.
+[Unit]
+Description=Harbor Point Order Desk
+After=network-online.target
+
+[Service]
+WorkingDirectory=%h/apps/harbor-point
+EnvironmentFile=%h/.config/harbor-point/env
+ExecStart=/usr/bin/env npm run start
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

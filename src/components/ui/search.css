@@ -1,0 +1,9 @@
+.sp-ui-search { position: relative; display: flex; align-items: center; min-width: 0; }
+.sp-ui-search input { width: 100%; height: 36px; padding: 0 46px 0 34px; border: 0; border-radius: 12px; background: var(--ap-sunk); color: var(--ap-ink); font: inherit; font-size: 14px; unicode-bidi: plaintext; }
+.sp-ui-search input::placeholder { color: var(--ap-ink-3); }
+.sp-ui-search input:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 0; }
+.sp-ui-search-ico { position: absolute; left: 11px; color: var(--ap-ink-3); pointer-events: none; }
+.sp-ui-search-kbd { position: absolute; right: 8px; height: 20px; padding: 0 6px; border-radius: 6px; background: var(--ap-wash); color: var(--ap-ink-3); font: 500 12px/20px var(--ap-font); pointer-events: none; }
+.sp-ui-search-clear { position: absolute; right: 7px; display: grid; place-items: center; width: 22px; height: 22px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--ap-ink) 9%, transparent); color: var(--ap-ink-2); cursor: pointer; }
+.sp-ui-search-clear:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 1px; }
+@media (hover: hover) { .sp-ui-search-clear:hover { background: var(--ap-surface); color: var(--ap-ink); box-shadow: var(--ap-lift); } }

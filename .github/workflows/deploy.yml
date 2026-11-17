@@ -1,0 +1,38 @@
+# Every push to harbor-point: typecheck, unit tests and a production build on a clean GitHub runner, then deploy on
+# erion's own runner (label erion-harbor-point, set up by deploy/erion/bootstrap.sh), which needs no inbound access.
+name: deploy
+on:
+  push:
+    branches: [harbor-point]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-erion
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      SIMPUL_SEED_PASSWORD: ci-only-seed-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  deploy:
+    needs: check
+    # The server's runner only ever runs pushes to this repository, never code from a pull request or a fork.
+    if: github.repository == 'ofrnsb/harbor-point-order-desk' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: [self-hosted, erion-harbor-point]
+    environment: erion
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "$GITHUB_SHA" > .deployed-sha
+      - run: bash deploy/erion/deploy.sh "$GITHUB_WORKSPACE"

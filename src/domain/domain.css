@@ -1,0 +1,872 @@
+/* Order Desk: one raised surface lit from the top left, and one light on it: the blue the agent adds on top of the data.
+   Panels rise out of the surface, the parts inside them sink into it (wells), so nothing is a box in a box. Findings
+   speak in serif, numbers read as instruments, and every answer carries the threads of the systems it was woven from. */
+:root {
+  --ap-backdrop: #e8ecf2;
+  --ap-surface: #edf0f5;
+  --ap-ink: #0f1b33;
+  --ap-ink-2: #38435a;
+  --ap-ink-3: #424c62;
+  --ap-accent: #1a3fc0;
+  --ap-accent-ink: #ffffff;
+  --ap-accent-tint: color-mix(in srgb, var(--ap-accent) 9%, var(--ap-surface));
+  --ap-good: #065a36;
+  --ap-good-tint: color-mix(in srgb, var(--ap-good) 10%, var(--ap-surface));
+  --ap-info: var(--ap-accent);
+  --ap-info-tint: var(--ap-accent-tint);
+  --ap-warn: #774306;
+  --ap-warn-tint: color-mix(in srgb, #d98400 13%, var(--ap-surface));
+  --ap-bad: #9c1d28;
+  --ap-bad-tint: color-mix(in srgb, var(--ap-bad) 9%, var(--ap-surface));
+  --ap-font: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", system-ui, sans-serif;
+  --ap-font-display: var(--ap-font);
+  --ap-mono: var(--ap-font);
+  /* Figures that are read as references or instruments (codes, amounts in a table, a source line) use the mono. */
+  --sp-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sp-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --ap-type-scale: 1;
+  --ap-radius-card: 28px;
+  --ap-radius-composer: 26px;
+  --ap-radius-pill: 999px;
+  --ap-radius-scale: 1;
+  --ap-density: 1;
+  /* Depth without a highlight: a raised part casts one soft shadow below it, a well is shaded on its inside edge. */
+  --sp-hi: transparent;
+  --sp-lo: rgba(28, 44, 78, 0.12);
+  --sp-raise: 0 1px 2px rgba(28, 44, 78, 0.05), 0 14px 34px -14px rgba(28, 44, 78, 0.22);
+  --sp-raise-s: 0 1px 2px rgba(28, 44, 78, 0.05), 0 8px 20px -10px rgba(28, 44, 78, 0.22);
+  --sp-raise-xs: 0 1px 2px rgba(28, 44, 78, 0.06), 0 4px 12px -6px rgba(28, 44, 78, 0.2);
+  --sp-well: inset 0 2px 6px rgba(28, 44, 78, 0.09);
+  --sp-well-s: inset 0 1px 3px rgba(28, 44, 78, 0.1);
+  --sp-accg: linear-gradient(140deg, #4a78ff 0%, #1f47d6 48%, #13319f 100%);
+  --sp-goodg: linear-gradient(140deg, #30d395, #0b8a55);
+  --sp-glow: 0 8px 18px -8px rgba(37, 99, 255, 0.5);
+  --ap-lift: var(--sp-raise-s);
+  --ap-lift-hover: 0 1px 2px rgba(28, 44, 78, 0.06), 0 12px 26px -10px rgba(28, 44, 78, 0.26);
+  --ap-float: var(--sp-raise);
+  --ap-hairline: color-mix(in srgb, var(--ap-ink) 8%, transparent);
+  --sp-rule: color-mix(in srgb, var(--ap-ink) 16%, transparent);
+  --ap-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --ap-d1: 120ms;
+  --ap-d2: 180ms;
+  --ap-d3: 240ms;
+  --ap-measure: 780px;
+  --ap-stage-max: 1040px;
+
+  --sp-stamp: var(--ap-good);
+  /* Chart inks, in this order for every chart (validated on #edf0f5: colour-blind separation >= 11.1, normal >= 19.2,
+     every ink >= 3:1 against the surface). */
+  --sp-series-1: #2563ff;
+  --sp-series-2: #c2410c;
+  --sp-series-3: #0e8f7e;
+  --sp-series-4: #b7791f;
+  /* Source threads: the colour of each system an answer was woven from, on the edge of what it fed. */
+  --sp-src-1: #0e8f7e;
+  --sp-src-2: #b7791f;
+  --sp-src-3: #c2410c;
+  --sp-src-4: #64748b;
+  --sp-row: 44px;
+  --sp-gap: 12px;
+  --sp-ink-mute: var(--ap-ink-3);
+  --sp-input: var(--ap-surface);
+  --sp-input-edge: color-mix(in srgb, var(--ap-ink) 16%, transparent);
+  --sp-scope: var(--ap-accent);
+  --sp-scope-tint: var(--ap-accent-tint);
+  --sp-mask: var(--ap-ink-2);
+  --sp-mask-tint: color-mix(in srgb, var(--ap-ink) 6%, var(--ap-surface));
+}
+
+body { background: var(--ap-backdrop); }
+.sp-mono, .sp-trail-sys, .sp-slip-head strong, .sp-slip-target, .sp-slip-audit { font-family: var(--ap-mono); }
+.ap-panel { border-radius: 10px; }
+.ap-shell { --sp-rail-w: 272px; }
+/* One stagger step for every CSS list entrance (motion.ts STEP.row is the same 30ms). */
+:root, .ap-shell { --sp-step: 30ms; }
+.ap-shell[data-settled] { transition: grid-template-columns var(--ap-d4) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.ap-shell[data-docked-rail="true"] { grid-template-columns: var(--sp-rail-w) minmax(0, 1fr) auto; }
+/* Folding keeps three tracks so the browser can glide the rail's width to zero instead of jumping. */
+.ap-shell[data-rail="folded"] { grid-template-columns: 0px minmax(0, 1fr) auto; }
+.ap-rail-frame { display: flex; min-width: 0; min-height: 0; overflow: hidden; }
+.ap-shell { overflow: clip; }
+.sp-dock-col { display: grid; min-width: 0; min-height: 0; }
+.sp-dock { grid-area: 1 / 1; display: flex; min-width: 0; min-height: 0; }
+.sp-dock > * { flex: none; }
+.ap-composer textarea { transition: height var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (prefers-reduced-motion: reduce) { .ap-composer textarea { transition: none; } }
+
+/* Switching chats: the log itself fades (its children animate their own opacity, so they are left alone). */
+.ap-log { transition: opacity var(--ap-d2) var(--ap-ease); }
+.ap-log[data-switching] { opacity: 0; transition-duration: var(--ap-d1); }
+@media (prefers-reduced-motion: reduce) { .ap-log { transition: none; } }
+.sp-start-frame { display: flex; flex-direction: column; flex: 1 0 auto; min-height: 0; }
+.ap-rail-frame > .ap-rail-dock { flex: none; width: var(--sp-rail-w); transition: opacity var(--ap-d3) var(--ap-ease), transform var(--ap-d4) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.ap-rail-frame[data-hidden] > .ap-rail-dock { opacity: 0; transform: translateX(-16px); transition: opacity var(--ap-d2) var(--ap-ease), transform var(--ap-d4) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (prefers-reduced-motion: reduce) { .ap-shell[data-settled], .ap-rail-frame > .ap-rail-dock { transition: none; } }
+
+/* ---------- Mark ---------- */
+.sp-mark { color: var(--ap-accent); }
+.sp-mark[data-busy="true"] .sp-mark-a, .sp-mark[data-busy="true"] .sp-mark-b { stroke-dasharray: 26 6; animation: sp-strand 1.4s linear infinite; }
+.sp-mark[data-busy="true"] .sp-mark-b { animation-direction: reverse; }
+@keyframes sp-strand { to { stroke-dashoffset: -32; } }
+
+/* ---------- Shared bits ---------- */
+.sp-chip {
+  display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border-radius: 6px;
+  font-size: 13px; line-height: 1; font-weight: 500; white-space: nowrap;
+  background: var(--ap-sunk); color: var(--ap-ink-2);
+}
+.sp-chip[data-tone="accent"] { background: var(--ap-accent-tint); color: var(--ap-accent); }
+.sp-chip[data-tone="good"] { background: var(--ap-good-tint); color: var(--ap-good); }
+.sp-chip[data-tone="warn"] { background: var(--ap-warn-tint); color: var(--ap-warn); }
+.sp-chip[data-tone="bad"] { background: var(--ap-bad-tint); color: var(--ap-bad); }
+.sp-chip[data-tone="info"] { background: var(--ap-info-tint); color: var(--ap-info); }
+.sp-count { display: inline-block; min-width: 22px; padding: 0 6px; margin-left: 6px; border-radius: 6px; background: var(--ap-sunk); color: var(--ap-ink-2); font-size: 13px; font-weight: 500; text-align: center; }
+.sp-skel { display: block; height: 40px; border-radius: 6px; background: var(--ap-sunk); animation: var(--ap-skel-anim); }
+.sp-q-skel { display: grid; gap: 8px; }
+.sp-empty-line { margin: 0; padding: 8px 4px; color: var(--sp-ink-mute); font-size: 14px; line-height: 20px; }
+.sp-state { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; background: var(--ap-sunk); color: var(--ap-ink-2); font-size: 14px; line-height: 20px; }
+.sp-state[data-tone="bad"] { background: var(--ap-bad-tint); color: var(--ap-bad); }
+.sp-state[data-tone="info"] { background: var(--ap-info-tint); color: var(--ap-info); }
+.sp-state svg { flex-shrink: 0; }
+.sp-state > span { flex: 1; min-width: 0; }
+.sp-link { display: inline-flex; align-items: center; gap: 4px; min-height: 32px; border: 0; background: transparent; color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 0 4px; }
+.sp-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 0 12px; border-radius: 6px;
+  border: 0; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  background: var(--ap-sunk); color: var(--ap-ink);
+  transition: background-color var(--ap-d2) var(--ap-ease), transform var(--ap-d1) var(--ap-ease), scale var(--ap-d1) var(--ap-ease), opacity var(--ap-d2) var(--ap-ease);
+}
+.sp-btn:not(:disabled):active { transform: scale(0.97); }
+.sp-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.sp-btn[data-tone="primary"] { background: var(--ap-accent); color: var(--ap-accent-ink); }
+.sp-btn[data-tone="danger"] { background: var(--ap-bad); color: #fff; }
+.sp-btn[data-tone="quiet"] { background: transparent; color: var(--ap-ink-2); box-shadow: inset 0 0 0 1px var(--sp-input-edge); }
+@media (hover: hover) {
+  .sp-btn:not(:disabled):hover { background: var(--ap-sunk-strong); }
+  .sp-btn[data-tone="primary"]:not(:disabled):hover { background: color-mix(in srgb, var(--ap-accent) 88%, #000); }
+  .sp-btn[data-tone="danger"]:not(:disabled):hover { background: color-mix(in srgb, var(--ap-bad) 88%, #000); }
+  .sp-btn[data-tone="quiet"]:not(:disabled):hover { background: var(--ap-sunk); }
+}
+.sp-input, .sp-select, .sp-textarea {
+  width: 100%; min-height: 40px; padding: 8px 14px; border-radius: 14px; border: 0;
+  background: var(--sp-input); box-shadow: var(--sp-well-s); color: var(--ap-ink); font-size: 14px; line-height: 20px;
+  transition: box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease);
+}
+.sp-textarea { min-height: 84px; resize: vertical; font: inherit; font-size: 14px; }
+.sp-input:focus, .sp-select:focus, .sp-textarea:focus { outline: none; box-shadow: var(--sp-well-s), inset 0 0 0 2px var(--ap-accent); }
+.sp-search { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 999px; background: var(--sp-input); box-shadow: var(--sp-well); color: var(--sp-ink-mute); }
+.sp-search input { flex: 1; min-width: 0; border: 0; background: transparent; outline: none; color: var(--ap-ink); font-size: 15px; }
+.sp-search:focus-within { box-shadow: inset 0 0 0 2px var(--ap-accent); }
+
+/* ---------- Popovers ---------- */
+
+.sp-pop {
+  position: absolute; top: calc(100% + 8px); right: 0; z-index: var(--ap-z-pop); width: min(360px, calc(100vw - 24px));
+  max-height: min(480px, calc(100dvh - 90px)); overflow: auto; padding: 6px; border-radius: 10px;
+  background: var(--ap-surface); box-shadow: var(--ap-float); transform-origin: top right;
+}
+
+.sp-pop-row {
+  width: 100%; display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 6px 8px; border: 0; border-radius: 6px;
+  background: transparent; color: var(--ap-ink); text-align: left; cursor: pointer; text-decoration: none;
+  transition: background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease);
+}
+.sp-pop-row[aria-selected="true"] { background: var(--ap-accent-tint); }
+@media (hover: hover) { .sp-pop-row:hover { background: var(--ap-sunk); } }
+.sp-pop-main { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.sp-pop-main strong { font-weight: 500; font-size: 15px; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-pop-main small { font-size: 13px; line-height: 18px; color: var(--sp-ink-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-pop-check { color: var(--ap-accent); flex-shrink: 0; }
+
+/* ---------- Top bar: act as, user ---------- */
+
+.sp-avatar { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: var(--ap-accent); color: var(--ap-accent-ink); font-size: 13px; font-weight: 600; flex-shrink: 0; }
+.sp-avatar.sp-skel { height: 32px; }
+
+/* ---------- Rail: agents ---------- */
+
+/* ---------- Rail: projects ---------- */
+
+/* ---------- Composer route ---------- */
+
+/* ---------- Home: work queue ---------- */
+.sp-home { width: 100%; max-width: var(--ap-stage-max); margin: 0 auto; padding: 8px 0 24px; display: flex; flex-direction: column; gap: 22px; }
+.sp-home-head h2 { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+.sp-home-sub { margin: 4px 0 0; font-size: 15px; color: var(--ap-ink-2); }
+.sp-queue { display: flex; flex-direction: column; gap: 18px; }
+.sp-q-group { background: var(--ap-surface); border-radius: 10px; box-shadow: var(--ap-lift); padding: 6px 0; }
+.sp-q-group[data-mode="approve"] { box-shadow: var(--ap-lift), inset 3px 0 0 var(--ap-warn); }
+.sp-q-h { margin: 8px 16px 6px; font-size: 14px; font-weight: 600; color: var(--ap-ink-2); display: flex; align-items: center; }
+.sp-starters .sp-q-h { margin: 0 0 10px; }
+.sp-q-list { list-style: none; margin: 0; padding: 0; }
+.sp-q-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; gap: 12px; min-height: 56px; padding: 6px 16px; overflow: hidden; }
+.sp-q-row + .sp-q-row { box-shadow: inset 0 1px 0 var(--ap-hairline); }
+.sp-q-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; border: 0; background: transparent; padding: 4px 0; text-align: left; color: var(--ap-ink); cursor: pointer; border-radius: 6px; }
+.sp-q-title { font-size: 15px; font-weight: 500; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (hover: hover) { .sp-q-main:hover .sp-q-title { color: var(--ap-accent); text-decoration: underline; text-underline-offset: 3px; } }
+.sp-q-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 13px; line-height: 18px; color: var(--sp-ink-mute); }
+.sp-q-amount { font-size: 15px; font-weight: 600; text-align: right; white-space: nowrap; }
+.sp-q-actions, .sp-q-reject { display: flex; align-items: center; gap: 6px; }
+.sp-q-reject .sp-input { width: 200px; }
+.sp-q-empty { display: flex; align-items: center; gap: 10px; padding: 16px; border-radius: 10px; background: var(--ap-good-tint); color: var(--ap-good); font-size: 15px; }
+@media (max-width: 820px) {
+  .sp-q-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .sp-q-actions, .sp-q-reject, .sp-q-row > .sp-chip { grid-column: 1 / -1; justify-self: start; }
+}
+
+.sp-figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--sp-gap); }
+.sp-fig { position: relative; display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 10px; background: var(--ap-surface); box-shadow: var(--ap-lift); overflow: hidden; }
+.sp-fig-label { font-size: 13px; font-weight: 500; color: var(--sp-ink-mute); }
+.sp-fig-value { font-size: 24px; line-height: 32px; font-weight: 600; }
+.sp-fig-value[data-tone="good"] { color: var(--ap-good); }
+.sp-fig-value[data-tone="warn"] { color: var(--ap-warn); }
+.sp-fig-value[data-tone="bad"] { color: var(--ap-bad); }
+.sp-fig-delta { font-size: 13px; color: var(--ap-ink-2); }
+.sp-spark { position: absolute; right: 12px; bottom: 12px; width: 72px; height: 28px; fill: none; stroke: var(--ap-accent); stroke-width: 2; vector-effect: non-scaling-stroke; opacity: 0.8; }
+.sp-spark polyline { vector-effect: non-scaling-stroke; }
+
+.sp-starter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--sp-gap); }
+.sp-starter { display: flex; flex-direction: column; gap: 4px; min-height: 88px; padding: 12px 14px; border: 0; border-radius: 10px; background: var(--ap-surface); box-shadow: var(--ap-lift); text-align: left; cursor: pointer; color: var(--ap-ink); transition: box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (hover: hover) { .sp-starter:hover { box-shadow: var(--ap-lift-hover); } }
+.sp-starter strong { font-size: 15px; font-weight: 600; }
+.sp-starter span { font-size: 14px; line-height: 20px; color: var(--ap-ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* ---------- Scope panel ---------- */
+
+.sp-meter-track { display: block; height: 8px; border-radius: 4px; background: var(--ap-sunk-strong); overflow: hidden; }
+.sp-meter-fill { display: block; height: 100%; width: 100%; border-radius: 4px; background: var(--ap-accent); transform-origin: 0 50%; }
+.sp-meter-fill[data-tone="warn"] { background: var(--ap-warn); }
+.sp-meter-fill[data-tone="bad"] { background: var(--ap-bad); }
+
+/* ---------- Signature: Jejak Akses ---------- */
+.sp-trail { margin: 10px 0 4px; padding: 10px 12px; border-radius: 8px; background: color-mix(in srgb, var(--ap-accent) 4%, var(--ap-surface)); box-shadow: var(--ap-lift); }
+.sp-trail-head { margin: 0 0 6px; display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--sp-ink-mute); }
+.sp-trail-head > span:first-child { font-weight: 600; color: var(--ap-ink-2); }
+.sp-trail-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sp-trail-row { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: start; }
+.sp-trail-sys { display: flex; flex-direction: column; font-size: 13px; line-height: 18px; padding-top: 1px; }
+.sp-trail-sys strong { font-weight: 500; color: var(--ap-ink); }
+.sp-trail-sys span { color: var(--sp-ink-mute); }
+.sp-trail-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sp-trail-line { display: grid; grid-template-columns: minmax(80px, 180px) minmax(40px, 1fr) auto; align-items: center; gap: 10px; }
+.sp-trail-obj { font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-trail-track { height: 8px; border-radius: 4px; background: var(--ap-sunk-strong); overflow: hidden; }
+.sp-trail-bar { display: block; height: 100%; border-radius: 4px; background: var(--ap-accent); }
+.sp-trail-row[data-op="aggregate"] .sp-trail-bar { background: color-mix(in srgb, var(--ap-accent) 60%, var(--sp-scope)); }
+.sp-trail-row[data-op="write"] .sp-trail-bar { background: var(--ap-good); }
+.sp-trail-row[data-op="denied"] .sp-trail-track { background: var(--ap-bad-tint); }
+.sp-trail-row[data-op="denied"] .sp-trail-bar { background: repeating-linear-gradient(135deg, var(--ap-bad) 0 4px, transparent 4px 8px); }
+.sp-trail-row[data-op="denied"] .sp-trail-count, .sp-trail-row[data-op="denied"] .sp-trail-sys strong { color: var(--ap-bad); }
+.sp-trail-count { font-size: 13px; color: var(--ap-ink-2); white-space: nowrap; }
+.sp-trail-notes { display: flex; flex-wrap: wrap; gap: 4px; }
+.sp-trail-note { display: inline-flex; align-items: center; min-height: 22px; padding: 0 6px; border-radius: 4px; font-family: var(--ap-mono); font-size: 13px; line-height: 18px; background: var(--ap-sunk); color: var(--ap-ink-2); }
+.sp-trail-note[data-k="scope"] { background: var(--sp-scope-tint); color: var(--sp-scope); }
+.sp-trail-note[data-k="mask"] { background: var(--sp-mask-tint); color: var(--sp-mask); }
+.sp-trail-model { margin: 8px 0 0; padding-top: 8px; box-shadow: inset 0 1px 0 var(--ap-hairline); display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font-size: 13px; color: var(--sp-ink-mute); }
+.sp-trail-model strong { font-family: var(--ap-mono); font-weight: 500; color: var(--ap-ink); }
+.sp-trail-where { display: inline-flex; align-items: center; min-height: 22px; padding: 0 6px; border-radius: 4px; font-size: 13px; background: var(--ap-good-tint); color: var(--ap-good); }
+.sp-trail-where[data-external="true"] { background: var(--ap-info-tint); color: var(--ap-info); }
+.sp-trail-reroute { color: var(--sp-mask); }
+@media (max-width: 640px) {
+  .sp-trail-row { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .sp-trail-sys { flex-direction: row; gap: 6px; }
+  .sp-trail-line { grid-template-columns: minmax(0, 1fr) auto; }
+  .sp-trail-track { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* ---------- Receipt: Bukti Eksekusi ---------- */
+.sp-slip { position: relative; padding: 12px 14px 12px 18px; border-radius: 6px; background: var(--ap-surface); box-shadow: inset 4px 0 0 var(--ap-good); }
+.sp-slip[data-waiting="true"] { box-shadow: inset 4px 0 0 var(--ap-warn); }
+.sp-slip-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 14px; color: var(--ap-ink-2); }
+.sp-slip-head strong { font-size: 18px; font-weight: 500; color: var(--ap-ink); }
+.sp-slip-target { margin: 4px 0 8px; font-size: 14px; color: var(--ap-ink-2); overflow-wrap: anywhere; }
+.sp-slip-rows { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 6px 16px; }
+.sp-slip-rows div { display: flex; flex-direction: column; min-width: 0; }
+.sp-slip-rows dt { font-size: 13px; color: var(--sp-ink-mute); }
+.sp-slip-rows dd { margin: 0; font-size: 15px; font-weight: 500; overflow-wrap: anywhere; }
+.sp-slip-audit { margin: 10px 0 0; padding-top: 8px; box-shadow: inset 0 1px 0 var(--ap-hairline); font-size: 13px; color: var(--sp-ink-mute); }
+
+/* ---------- Sign in ---------- */
+.sp-signin { min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; overflow: auto; }
+.sp-signin-card { width: min(440px, 100%); max-height: calc(100dvh - 48px); display: flex; flex-direction: column; gap: 14px; padding: 24px; border-radius: 12px; background: var(--ap-surface); box-shadow: var(--ap-float); }
+.sp-signin-head { display: flex; gap: 14px; align-items: flex-start; }
+.sp-signin-head h2 { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; }
+.sp-signin-head p { margin: 2px 0 0; color: var(--ap-ink-2); font-size: 15px; }
+.sp-signin-mark { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 8px; background: var(--ap-accent-tint); flex-shrink: 0; }
+.sp-signin-form { display: grid; gap: 16px; }
+.sp-signin-form .sp-ui-btn { width: 100%; min-height: 44px; justify-content: center; }
+.sp-signin-secret { position: relative; }
+.sp-signin-key { position: relative; margin-bottom: 6px; }
+.sp-signin-key .sp-input { width: 100%; }
+/* Sits in the gap under the field, so showing and hiding it never moves the button. */
+.sp-signin-hint { position: absolute; inset-inline: 4px; top: calc(100% + 2px); color: var(--ap-ink-3); font-size: 12.5px; line-height: 14px; pointer-events: none; }
+.sp-signin-secret .sp-input { width: 100%; padding-inline-end: 72px; }
+.sp-signin-reveal { position: absolute; inset-block: 0; inset-inline-end: 4px; min-width: 60px; border: 0; border-radius: 8px; background: transparent; color: var(--ap-accent); font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+.sp-signin-reveal:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: -2px; }
+@media (hover: hover) { .sp-signin-reveal:hover { background: var(--ap-sunk); } }
+.sp-signin-list { position: relative; list-style: none; margin: 0; padding: 0; overflow: auto; display: grid; gap: 2px; min-height: 0; }
+.sp-signin-row { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 56px; padding: 6px 8px; border: 0; border-radius: 8px; background: transparent; text-align: left; cursor: pointer; color: var(--ap-ink); transition: background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-signin-row:disabled { cursor: progress; opacity: 0.7; }
+@media (hover: hover) { .sp-signin-row:not(:disabled):hover { background: var(--ap-sunk); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-skel { animation: none; }
+  .sp-mark[data-busy="true"] .sp-mark-a, .sp-mark[data-busy="true"] .sp-mark-b { animation: none; }
+}
+
+/* ---------- Admin console ---------- */
+.sp-ad { height: 100dvh; display: grid; grid-template-columns: 248px minmax(0, 1fr); background: var(--ap-backdrop); }
+.sp-ad-nav { display: flex; flex-direction: column; min-height: 0; padding: 12px 10px; gap: 8px; }
+.sp-ad-brand { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 8px; color: var(--ap-ink); text-decoration: none; }
+.sp-ad-brand span { display: flex; flex-direction: column; min-width: 0; }
+.sp-ad-brand strong { font-size: 16px; font-weight: 600; }
+.sp-ad-brand small { font-size: 13px; color: var(--sp-ink-mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-ad-nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; overflow: auto; flex: 1; align-content: start; }
+.sp-ad-link { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 0 10px; border-radius: 6px; color: var(--ap-ink-2); text-decoration: none; font-size: 15px; transition: color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-ad-link > svg, .sp-ad-link > span { position: relative; z-index: 1; }
+/* The sliding highlight sits under the label; it must stay out of the flow or it pushes the active item right. */
+.sp-ad-link > .sp-ad-hl { position: absolute; inset: 0; z-index: 0; }
+.sp-ad-link[data-active="true"] { color: var(--ap-ink); font-weight: 500; }
+/* State changes in the side surfaces ease instead of snapping. */
+.sp-ad-link, .sp-signin-row{ transition: color var(--ap-d2) var(--ap-ease), background-color var(--ap-d2) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+
+@keyframes sp-ident-in { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .sp-ad-link, .sp-signin-row{ transition: none; }
+  
+}
+.sp-ad-hl { position: absolute; inset: 0; border-radius: 6px; background: var(--ap-surface); box-shadow: var(--ap-lift); }
+@media (hover: hover) { .sp-ad-link:not([data-active="true"]):hover { color: var(--ap-ink); background: color-mix(in srgb, var(--ap-surface) 55%, transparent); } }
+.sp-ad-foot { display: grid; gap: 8px; padding: 8px 4px 0; }
+.sp-ad-foot p { margin: 0; display: flex; flex-direction: column; padding: 0 6px; }
+.sp-ad-foot strong { font-size: 14px; font-weight: 500; }
+.sp-ad-foot small { font-size: 13px; color: var(--sp-ink-mute); }
+.sp-ad-main { min-width: 0; overflow: auto; padding: 24px clamp(16px, 3vw, 40px) 64px; }
+.sp-ad-main > div { max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+a.sp-btn { text-decoration: none; }
+
+.sp-ad-filter { min-width: 260px; flex: 1; max-width: 420px; }
+.sp-icon-x { display: grid; place-items: center; width: 28px; height: 28px; border: 0; border-radius: 6px; background: transparent; color: var(--sp-ink-mute); cursor: pointer; }
+
+.sp-ad-empty { display: flex; align-items: center; gap: 10px; padding: 20px 16px; border-radius: 10px; background: var(--ap-surface); box-shadow: var(--ap-lift); color: var(--ap-ink-2); font-size: 15px; }
+
+@media (max-width: 900px) {
+  .sp-ad { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
+  .sp-ad-nav { flex-direction: row; align-items: center; overflow-x: auto; padding: 8px 12px; }
+  .sp-ad-nav ul { display: flex; overflow: visible; }
+  .sp-ad-link { white-space: nowrap; }
+  .sp-ad-foot, .sp-ad-brand small { display: none; }
+}
+
+/* Tables: horizontal rules only, no outer box. */
+
+.sp-table { width: 100%; border-collapse: collapse; background: var(--ap-surface); border-radius: 10px; box-shadow: var(--ap-lift); font-size: 14px; line-height: 20px; }
+.sp-og-body .sp-table { box-shadow: none; border-radius: 0; }
+/* One rhythm for every admin table: header and cells share the same 16px inline padding (20px at the outer edges), so
+   each heading sits exactly over its column; numbers align right in both. Rows breathe at 12px; the tight variant at 8px. */
+.sp-table th { text-align: start; vertical-align: bottom; font-weight: 500; font-size: 13px; line-height: 18px; color: var(--sp-ink-mute); padding: 14px 16px 10px; box-shadow: inset 0 -1px 0 var(--ap-hairline); white-space: nowrap; }
+.sp-table td { padding: 12px 16px; vertical-align: middle; }
+.sp-table :is(th, td):first-child { padding-inline-start: 20px; }
+.sp-table :is(th, td):last-child { padding-inline-end: 20px; }
+.sp-table tbody tr + tr td { box-shadow: inset 0 1px 0 var(--ap-hairline); }
+.sp-table-tight td { padding-block: 8px; }
+.sp-table :is(th, td)[data-num="true"] { text-align: end; font-variant-numeric: tabular-nums; }
+.sp-table tbody tr { transition: background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (hover: hover) { .sp-table tbody tr:hover { background: color-mix(in srgb, var(--ap-accent) 3%, var(--ap-surface)); } }
+/* Row actions are verbs on the row, not boxes: plain accent text that gains a tone on hover. */
+
+.sp-sens { display: inline-flex; align-items: center; min-height: 24px; padding: 0 7px; margin-left: 4px; border: 0; border-radius: 5px; font-size: 13px; font-weight: 500; background: var(--ap-sunk); color: var(--ap-ink-2); }
+.sp-sens[data-s="public"] { background: var(--ap-good-tint); color: var(--ap-good); }
+.sp-sens[data-s="internal"] { background: var(--ap-info-tint); color: var(--ap-info); }
+.sp-sens[data-s="confidential"] { background: var(--ap-warn-tint); color: var(--ap-warn); }
+.sp-sens[data-s="restricted"] { background: var(--sp-mask-tint); color: var(--sp-mask); }
+
+/* A label the platform suggested and nobody confirmed yet: the same choice, drawn dashed. */
+
+.sp-inline { min-height: 32px; background: transparent; box-shadow: none; }
+.sp-inline:hover { box-shadow: inset 0 0 0 1px var(--sp-input-edge); }
+.sp-input[data-mono="true"], .sp-textarea[data-mono="true"] { font-family: var(--ap-mono); font-size: 14px; }
+.sp-rot { transition: transform var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-rot[data-open="true"] { transform: rotate(90deg); }
+
+/* What the platform learned about a column: one quiet line, with its answers as small text actions beside it. */
+
+/* Form controls */
+.sp-form { display: flex; flex-direction: column; gap: 14px; padding-top: 14px; }
+
+.sp-field-hint { margin: 0; font-size: 13px; line-height: 18px; color: var(--sp-ink-mute); display: flex; align-items: center; gap: 6px; }
+.sp-form-row { display: grid; gap: 10px; align-items: center; }
+.sp-form-row[data-cols="2"] { grid-template-columns: 1fr 1fr; align-items: start; }
+.sp-form-row[data-cols="3"] { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr) auto; }
+.sp-form-row[data-cols="host"] { grid-template-columns: minmax(0, 1fr) 120px; align-items: start; }
+.sp-form-row[data-cols="rule"] { grid-template-columns: minmax(0, 1fr) auto auto; align-items: start; }
+.sp-form-row[data-cols="filter"] { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) auto; }
+.sp-form-row[data-cols="member"] { grid-template-columns: minmax(0, 1fr) auto auto; }
+@media (max-width: 640px) { .sp-form-row[data-cols] { grid-template-columns: 1fr; } }
+.sp-form-block { display: flex; flex-direction: column; gap: 8px; padding-top: 14px; box-shadow: inset 0 1px 0 var(--ap-hairline); }
+.sp-form-block h3 { margin: 0; font-size: 15px; font-weight: 600; display: flex; align-items: center; }
+.sp-form-block > .sp-btn { align-self: flex-start; }
+
+.sp-switch { display: inline-flex; align-items: center; gap: 10px; min-height: 40px; padding: 0; border: 0; background: transparent; color: var(--ap-ink); font-size: 15px; cursor: pointer; text-align: left; }
+.sp-switch:disabled { opacity: 0.55; cursor: progress; }
+.sp-switch-track { position: relative; width: 36px; height: 20px; border-radius: 10px; background: var(--ap-sunk-strong); flex-shrink: 0; transition: background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-switch-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(20, 28, 48, 0.25); transition: transform var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-switch[aria-checked="true"] .sp-switch-track { background: var(--ap-accent); }
+.sp-switch[aria-checked="true"] .sp-switch-thumb { transform: translateX(16px); }
+
+.sp-seg { display: inline-flex; flex-wrap: wrap; gap: 2px; padding: 3px; border-radius: 8px; background: var(--ap-sunk); max-width: 100%; }
+.sp-seg-btn { min-height: 34px; max-width: 100%; padding: 6px 12px; border: 0; border-radius: 6px; background: transparent; color: var(--ap-ink-2); font-size: 14px; line-height: 20px; text-align: start; cursor: pointer; transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-seg-btn[aria-checked="true"] { background: var(--ap-surface); color: var(--ap-ink); font-weight: 500; box-shadow: var(--ap-lift); }
+@media (hover: hover) { .sp-seg-btn:not([aria-checked="true"]):hover { color: var(--ap-ink); } }
+
+.sp-multi { display: flex; flex-wrap: wrap; gap: 6px; }
+.sp-multi-btn { display: inline-flex; align-items: center; gap: 5px; min-height: 34px; padding: 0 10px; border: 0; border-radius: 6px; background: var(--ap-surface); color: var(--ap-ink-2); box-shadow: inset 0 0 0 1px var(--sp-input-edge); font-size: 14px; cursor: pointer; transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-multi-btn[aria-pressed="true"] { background: var(--ap-accent-tint); color: var(--ap-accent); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ap-accent) 35%, transparent); }
+/* The check keeps its slot, so choosing never shifts the label. */
+.sp-multi-check { display: inline-grid; place-items: center; width: 13px; opacity: 0; transform: scale(0.6); transition: opacity var(--ap-d1) var(--ap-ease), transform var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-multi-btn[aria-pressed="true"] .sp-multi-check { opacity: 1; transform: scale(1); }
+@media (prefers-reduced-motion: reduce) { .sp-multi-check { transition: none; } }
+
+.sp-select-wrap { position: relative; min-width: 0; }
+.sp-select { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 0 10px; border: 0; border-radius: 6px; background: var(--sp-input); box-shadow: inset 0 0 0 1px var(--sp-input-edge); color: var(--ap-ink); font-size: 14px; text-align: left; cursor: pointer; }
+.sp-select:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--ap-accent); }
+.sp-select-val { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-select-val[data-empty="true"] { color: var(--sp-ink-mute); }
+.sp-select-pop { left: 0; right: auto; width: max(100%, 240px); list-style: none; margin: 0; transform-origin: top left; }
+.sp-select-pop .sp-pop-row { min-height: 40px; }
+.sp-select-pop .sp-pop-row[data-hi="true"] { background: var(--ap-sunk); }
+
+/* Side sheet */
+.sp-sheet-scrim { position: fixed; inset: 0; z-index: var(--ap-z-drawer); background: rgba(20, 24, 36, 0.28); }
+.sp-sheet { position: fixed; top: 0; right: 0; bottom: 0; z-index: calc(var(--ap-z-drawer) + 1); width: min(720px, 100vw); display: flex; flex-direction: column; background: var(--ap-backdrop); box-shadow: var(--ap-float); }
+.sp-sheet-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 18px 20px 12px; }
+.sp-sheet-head h2 { margin: 0; font-size: 20px; line-height: 28px; font-weight: 600; }
+.sp-sheet-head p { margin: 2px 0 0; font-size: 14px; color: var(--ap-ink-2); }
+.sp-sheet-body { flex: 1; overflow: auto; padding: 0 20px 24px; }
+.sp-sheet-foot { padding: 12px 20px 16px; box-shadow: 0 -1px 0 var(--ap-hairline); background: var(--ap-backdrop); }
+
+.sp-savebar-err { margin: 0; display: flex; gap: 6px; align-items: flex-start; color: var(--ap-bad); font-size: 14px; line-height: 20px; }
+
+/* Grants editor */
+.sp-grants { display: grid; gap: 8px; }
+.sp-grant { padding: 8px 12px; border-radius: 8px; background: var(--ap-surface); box-shadow: var(--ap-lift); }
+.sp-grant[data-on="false"] { background: transparent; box-shadow: inset 0 0 0 1px var(--ap-hairline); }
+.sp-grant-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.sp-grant-head .sp-switch { flex: 1; min-width: 180px; }
+.sp-grant-body { overflow: hidden; display: grid; gap: 6px; padding-top: 6px; }
+.sp-og { padding: 4px 8px; border-radius: 6px; }
+.sp-og[data-on="true"] { background: var(--ap-sunk); }
+.sp-og-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sp-og-name { font-size: 13px; color: var(--sp-ink-mute); flex: 1; }
+.sp-og-body { padding: 6px 0 10px; display: grid; gap: 8px; }
+.sp-og-h { margin: 6px 0 0; font-size: 14px; font-weight: 600; }
+.sp-inline[readonly]:hover { box-shadow: none; }
+
+.sp-setup { width: min(680px, 100%); overflow: auto; }
+.sp-setup-body { display: flex; flex-direction: column; gap: 20px; }
+.sp-setup-body > .sp-form { padding-top: 0; }
+.sp-setup-h { margin: 0; font-size: 16px; font-weight: 600; }
+.sp-levels { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.sp-level { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto auto auto; gap: 6px; align-items: center; }
+.sp-level-n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 6px; background: var(--ap-accent-tint); color: var(--ap-accent); font-size: 13px; font-weight: 600; }
+.sp-setup-add { align-self: flex-start; }
+.sp-setup-go { min-height: 44px; }
+
+/* Tenant-neutral workspace screens */
+
+.sp-chat-start { align-self: center; width: min(780px, 100%); margin: auto; padding: 16px 4px 28px; }
+.sp-chat-start h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+
+.sp-chat-start > p { margin: 8px auto 0; color: var(--ap-ink-2); font-size: 14px; line-height: 21px; }
+
+.sp-brief { display: grid; gap: 12px; margin-top: 14px; }
+
+.sp-brief-body { display: grid; gap: 12px; transition: opacity var(--ap-d3) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-brief[data-phase="building"] .sp-brief-body { opacity: 0.55; pointer-events: none; }
+
+/* ---------- Lego blocks the agent assembles: table, board, calendar, chart ---------- */
+
+.sp-lego-empty { margin: 4px 16px 8px; font-size: 14px; color: var(--ap-ink-3); }
+
+.sp-board:focus-visible { outline: 2px solid var(--ap-accent); outline-offset: 2px; }
+/* Answer tables (inside .sp-table-wrap): sortable headers carry their own padding in the button. Admin tables are styled above. */
+
+.sp-board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(168px, 1fr); gap: 10px; overflow-x: auto; padding: 4px 12px 8px; }
+.sp-board-lane { background: var(--ap-sunk); border-radius: 8px; padding: 8px; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+
+.sp-board-lane ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
+.sp-board-card { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px; background: var(--ap-surface); box-shadow: var(--ap-lift); text-align: start; font: inherit; color: var(--ap-ink); }
+button.sp-board-card { cursor: pointer; transition: box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (hover: hover) { button.sp-board-card:hover { box-shadow: var(--ap-lift-hover); } }
+.sp-board-item { position: relative; display: flex; flex-direction: column; gap: 4px; border-radius: 6px; }
+.sp-board-item[draggable="true"] { cursor: grab; }
+.sp-board-item[draggable="true"]:active { cursor: grabbing; }
+.sp-board-item > .sp-ui-badge { align-self: flex-start; }
+.sp-board-item[data-asked] > .sp-board-card { opacity: 0.6; }
+
+.sp-board-lane[data-drop] { box-shadow: inset 0 0 0 2px var(--ap-accent); }
+.sp-board-card strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.sp-board-card span { font-size: 13px; color: var(--ap-ink-3); overflow-wrap: anywhere; }
+
+@media (prefers-reduced-motion: reduce) { .sp-board-card { transition: none; } }
+
+/* ---------- Kanvas: the agent's workspace on the right ---------- */
+.sp-canvas { width: clamp(440px, 44vw, 900px); margin: 12px 14px 14px 0; display: flex; flex-direction: column; min-height: 0; background: var(--ap-surface); border-radius: var(--ap-radius-card); box-shadow: var(--ap-float); overflow: hidden; }
+.sp-canvas-head { display: flex; align-items: center; min-height: 52px; padding: 6px 10px 6px 18px; flex-shrink: 0; }
+.sp-canvas-head > .sp-ui-row { flex: 1; }
+.sp-canvas-tabs { display: flex; gap: 6px; padding: 0 14px 10px; overflow-x: auto; flex-shrink: 0; box-shadow: inset 0 -1px 0 var(--ap-hairline); }
+.sp-canvas-tab { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; max-width: 240px; min-height: 32px; padding: 0 10px; border: 0; border-radius: 6px; background: var(--ap-sunk); color: var(--ap-ink-2); font: inherit; font-size: 13px; cursor: pointer; }
+.sp-canvas-tab span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sp-canvas-tab[aria-pressed="true"] { background: var(--ap-accent-tint); color: var(--ap-accent); font-weight: 600; }
+.sp-canvas-body { flex: 1; min-height: 0; overflow-y: auto; padding: 14px; background: var(--ap-backdrop); }
+/* On the canvas a block has room: tables, boards and calendars use the full height instead of their in-chat caps. */
+
+.sp-canvas-body .sp-board-lane ul { max-height: none; }
+
+.sp-canvas-chip { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; margin: 8px 0; padding: 8px 14px 8px 10px; border: 0; border-radius: var(--ap-radius-card); background: var(--ap-surface); box-shadow: var(--ap-lift); text-align: start; font: inherit; color: var(--ap-ink); cursor: pointer; transition: box-shadow var(--ap-d2) var(--ap-ease), background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+@media (hover: hover) { .sp-canvas-chip:hover { box-shadow: var(--ap-lift-hover); } }
+.sp-canvas-chip[data-focused="true"] { box-shadow: var(--ap-lift), inset 3px 0 0 var(--ap-accent); }
+
+@media (prefers-reduced-motion: reduce) { .sp-canvas-chip { transition: none; } }
+
+/* Identity at the top of the docked sidebar: the team switcher takes the width, the avatar sits beside it. */
+/* The identity block layers above the rail below it: its entrance animation makes a stacking context, so without its own
+   z-index the team list would open underneath the projects. In the rail the list opens from the left edge, inside it. */
+.sp-rail-identity { position: relative; z-index: 5; display: flex; align-items: center; gap: 8px; padding: 4px 10px 6px; }
+/* The team list opens across the whole sidebar row, so it never runs past the rail's edge. */
+.sp-rail-identity .sp-ui-menu-wrap[data-grow] { max-width: none; position: static; }
+.sp-rail-identity .sp-ui-menu-wrap[data-grow] > .sp-ui-menu { left: 10px; right: 10px; width: auto; transform-origin: top left; }
+
+/* Top bar: the left controls never collapse; the chat title and then the team switcher give up width first.
+   (Scoped under .ap-shell .ap-top so these win over the shell's own rules whatever the stylesheet order.) */
+.ap-shell .ap-top .ap-top-start { flex: 1 1 0; min-width: 0; }
+.ap-shell .ap-top .ap-top-start > * { flex-shrink: 0; }
+.ap-shell .ap-top .ap-top-start > .ap-title, .ap-shell .ap-top .ap-top-start > .ap-title-input { flex-shrink: 1; min-width: 0; max-width: 100%; }
+.ap-shell .ap-top .ap-top-end { flex: 0 1 auto; min-width: 0; }
+.ap-shell .ap-top .ap-top-end > * { flex-shrink: 0; }
+
+/* A table wider than its frame fades at the side that still has columns, so it reads as scrollable. */
+
+/* ---------- Layout: several lego blocks on one canvas screen ---------- */
+
+/* ---------- Lego: records ---------- */
+
+.sp-board-lane[data-over="true"] { box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--ap-bad) 45%, transparent); }
+
+  
+
+/* ---------- Lego: analytics ---------- */
+
+ 
+
+  
+
+ 
+
+.sp-spark { width: 100%; height: 28px; }
+
+/* Printing prints the canvas only: the block on screen, full length, without the app around it. */
+@media print {
+  @page { margin: 14mm; }
+  html, body { height: auto !important; overflow: visible !important; background: #fff !important; }
+  body * { visibility: hidden; }
+  .sp-canvas, .sp-canvas * { visibility: visible; }
+  .sp-canvas { position: absolute; inset: 0 auto auto 0; width: 100% !important; height: auto !important; max-height: none !important; overflow: visible !important; box-shadow: none !important; background: #fff !important; }
+  .sp-canvas-head, .sp-canvas-tabs { display: none !important; }
+  .sp-canvas-body, .sp-canvas-body * { overflow: visible !important; max-height: none !important; }
+  .sp-canvas-body { height: auto !important; padding: 0 !important; }
+  .sp-canvas-body tr, .sp-canvas-body li { break-inside: avoid; }
+}
+
+/* ---------- Cap dan tinta: shared components ---------- */
+/* Schibsted's tabular separators are digit-wide; proportional figures read cleaner and numeric columns stay right-aligned. */
+* { font-variant-numeric: lining-nums proportional-nums !important; }
+
+/* Active rows are a raised paper slip, never a coloured stripe. */
+
+/* Icons stand bare beside their labels: no tinted tiles. */
+
+/* Agent label: mark, name, time; quiet and on one line. */
+.ap-agent-mark { width: auto; height: auto; background: none; box-shadow: none; color: var(--ap-accent); }
+.ap-agent-time { color: var(--ap-ink-3); font-weight: 400; font-size: 12.5px; }
+
+/* A canvas view referenced in the conversation: a slip on the page, lifting on hover; the open one tinted. */
+.sp-canvas-chip { border-radius: 10px; background: var(--ap-surface); box-shadow: var(--ap-lift); transition: box-shadow var(--ap-d2) var(--ap-ease), transform var(--ap-d2) var(--ap-ease), background-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-canvas-chip[data-focused="true"] { background: var(--ap-accent-tint); box-shadow: var(--ap-lift); }
+@media (hover: hover) { .sp-canvas-chip:hover { box-shadow: var(--ap-lift-hover); transform: translateY(-1px); } }
+
+/* Canvas tabs: a segmented row; the open view is the raised one. */
+.sp-canvas-tab { border-radius: 8px; background: transparent; color: var(--ap-ink-2); transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-canvas-tab[aria-pressed="true"] { background: var(--ap-surface); color: var(--ap-ink); box-shadow: var(--ap-lift); font-weight: 600; }
+@media (hover: hover) { .sp-canvas-tab:not([aria-pressed="true"]):hover { background: color-mix(in srgb, var(--ap-surface) 60%, transparent); color: var(--ap-ink); } }
+
+/* Composer: a floating sheet over a backdrop fade, so scrolled content never shows around or below it. */
+.ap-composer { border-radius: var(--ap-radius-composer); background: var(--ap-surface); box-shadow: var(--ap-float); transition: box-shadow var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+/* The composer is the one place to type, so it carries no focus ring; its caret shows focus. */
+.ap-composer:focus-within { box-shadow: var(--ap-float); border-color: transparent; outline: none; }
+.ap-composer textarea:focus, .ap-composer textarea:focus-visible { outline: none; box-shadow: none; }
+.ap-send { background: var(--ap-accent); color: var(--ap-accent-ink); }
+
+/* Answer blocks: no decorative gradients on card heads. */
+
+/* One motion system: press 0.98, hover 180ms on the ease, blocks rise in once. Reduced motion keeps colour only. */
+/* The press uses the independent `scale` property, so it never fights a motion/react transform on the same button,
+   and it eases both ways instead of snapping. Every control eases its colour, fill and ring on hover and focus. */
+:where(button, [role="button"]) { transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease), opacity var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+:where(button, [role="button"]):not(:disabled):active { scale: 0.98; }
+:where(.sp-link, .sp-search, .sp-audit-row td) { transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease), text-decoration-color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-lego :where(button, a, [role="button"], tbody tr) { transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), box-shadow var(--ap-d2) var(--ap-ease), transform var(--ap-d1) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+
+/* Blocks always arrive inside a wrapper that already moves (a chat turn, the canvas, the start screen), so the block itself only fades. */
+
+@keyframes sp-rise { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) {
+  :where(button, [role="button"]):active { scale: none; }
+  :where(button, [role="button"]) { transition-property: background-color, color, box-shadow, opacity; }
+
+  .sp-canvas-chip:hover { transform: none; }
+}
+
+/* ---------- Signature: Cap ----------
+   A decision leaves one mark: a small seal, the decision in words, its reference beneath in mono. */
+
+@keyframes sp-stamp-fade { from { opacity: 0; } }
+@keyframes sp-stamp-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes sp-stamp-turn { to { transform: rotate(360deg); } }
+
+/* No accent stripes anywhere: approval groups, receipt slips and alert tiles speak through tone and their stamp. */
+.sp-q-group[data-mode="approve"] { box-shadow: var(--ap-lift); background: color-mix(in srgb, var(--ap-warn) 5%, var(--ap-surface)); }
+/* The receipt is part of its card, not a box inside it: one hairline above, then the facts. */
+.sp-slip, .sp-slip[data-waiting="true"] { box-shadow: none; background: none; padding: 14px 0 0; border-radius: 0; }
+.sp-slip-head { font-size: 13px; font-weight: 600; color: var(--ap-ink-3); margin-bottom: 8px; }
+
+.ap-facts dd { overflow-wrap: anywhere; min-width: 0; }
+
+/* ---------- Home: greeting, the decision desk, then pins and questions ---------- */
+.sp-chat-start { width: min(760px, 100%); margin: auto; padding: 24px 4px 32px; text-align: start; }
+.sp-chat-start h1 { margin: 0 0 20px; font-size: 26px; line-height: 32px; font-weight: 600; letter-spacing: -0.012em; text-wrap: balance; }
+
+  
+
+/* ---------- Review round 1: flatter rail, one-surface canvas, quieter chrome, a stronger stamp ---------- */
+/* Rail: one plane; the active row is a tone step, not a raised card. */
+
+.ap-brand-tag { display: none; }
+
+/* Canvas: the panel is the one surface; blocks inside it sit flat on it (no card in a card). */
+.sp-canvas-body { background: var(--ap-surface); padding: 4px 6px 12px; }
+
+/* Status: the word in its tone on a pale tint; no decorative dot or icon. */
+
+/* Composer: key hints only while writing. */
+
+.sp-chat-start h1 { font-size: 22px; line-height: 28px; margin-bottom: 16px; }
+
+/* The record's answer figure: the one number set large under its title. */
+
+.sp-canvas-chip { padding-inline: 16px; gap: 14px; }
+.sp-canvas-chip-ref { flex: none; padding: 2px 8px; border-radius: 6px; background: var(--ap-accent-tint); color: var(--ap-accent); font-size: 13px; font-weight: 600; white-space: nowrap; }
+/* Phone top bar: the team name is what matters; "Sebagai" and the role chip step aside so it never truncates to a letter. */
+
+@media (max-width: 640px) {
+  .ap-shell .ap-top .ap-top-start { flex: none; min-width: 0; }
+  .ap-shell .ap-top .ap-brand-name, .ap-shell .ap-top .ap-crumb-sep, .ap-shell .ap-top .ap-title { display: none; }
+  .ap-shell .ap-top .ap-top-end { flex: 1 1 auto; min-width: 0; }
+}
+
+/* ---------- Output motion and paging: each result arrives the way it reads ----------
+   Rows arrive one by one (the first twelve staggered), a page slides in from the side it came from, a bar grows from
+   its base, a line draws left to right, a horizontal bar fills from the start. Only transform and opacity; once per mount. */
+
+/* Rows added to a growing list ("Tampilkan N lagi") arrive together, without replaying the ones already shown. */
+
+@keyframes sp-row-in { from { opacity: 0; transform: translate(8px, 2px); } }
+@keyframes sp-row-in-prev { from { opacity: 0; transform: translate(-8px, 2px); } }
+
+@keyframes sp-bar-grow { from { transform: scaleY(0); } }
+
+@keyframes sp-line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+
+@keyframes sp-fill { from { transform: scaleX(0); } }
+/* A height that glides (AutoHeight): clipped while it moves, with room kept for focus rings and soft shadows. */
+.sp-autoh { overflow: hidden; box-sizing: content-box; margin: -6px; padding: 6px; }
+
+/* The pager: range on the left, page keys on the right; the current page is the raised key. */
+.sp-pager { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 12px; padding: 10px 16px 4px; }
+.sp-pager-range { color: var(--ap-ink-3); font-size: 13px; }
+.sp-pager-nav { display: flex; align-items: center; gap: 2px; flex-wrap: wrap; }
+.sp-pager-btn, .sp-pager-num { display: inline-flex; align-items: center; justify-content: center; gap: 4px; min-width: 36px; min-height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: var(--ap-ink-2); font: inherit; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), scale var(--ap-d1) var(--ap-ease); }
+.sp-pager-num[aria-current="page"] { background: var(--ap-accent-tint); color: var(--ap-accent); font-weight: 600; }
+.sp-pager-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+@media (hover: hover) { .sp-pager-btn:not(:disabled):hover, .sp-pager-num:not([aria-current]):hover { background: var(--sp-input); color: var(--ap-ink); } }
+@media (pointer: coarse) { .sp-pager-btn, .sp-pager-num { min-width: 44px; min-height: 44px; } }
+@media (max-width: 480px) { .sp-pager-num:not([aria-current]) { display: none; } }
+.sp-pager-gap { padding: 0 4px; color: var(--ap-ink-3); }
+
+@keyframes sp-fade-only { from { opacity: 0; } }
+/* A paged list shows its whole page: the pager is the way through, not a scroll box inside the card. */
+
+/* ---------- Bata: the bricks the agent builds answers from ----------
+   Layout bricks carry spacing only (no boxes): a section is the one surface step, a focus section the raised one. */
+
+ 
+
+ 
+ 
+
+ 
+
+  
+
+ 
+  
+ 
+
+  
+
+/* A chip is one tone off whatever it sits on: sunk on the open surface, raised inside a section. */
+ 
+
+/* The quiet action is still plainly a button: raised on the surface, never the tone of the part it sits in. */
+
+/* Narrow canvases and phones: grids and splits fold to one column, nothing scrolls sideways but a wide table. */
+
+/* Status colours ease from one state to the next instead of snapping (badges, chips, dots, meters). */
+.sp-chip, .sp-state, .sp-fig-value, .sp-view-work-meta, .sp-view-state {
+  transition: background-color var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease);
+}
+.sp-meter-fill { transition: transform var(--ap-d4) var(--ap-ease), background-color var(--ap-d2) var(--ap-ease); }
+/* Scroll areas keep their scroll: reaching the end does not drag the page behind them. */
+.ap-scroll, .ap-panel-body, .sp-canvas-body, .sp-sheet-body { overscroll-behavior: contain; }
+
+/* Whiteboards in the sidebar */
+
+/* Loading is a shimmer everywhere: a soft light sweeps across every placeholder shape, left to right. */
+:root { --sp-shine: color-mix(in srgb, #ffffff 72%, transparent); }
+:root :is(.ap-skel, .ap-skel-row, .ap-next-skel, .ap-panel-skel-card, .sp-skel, .sp-view-loading span, .sp-start-skel, .sp-brief-skel span, .sp-wb-loading span, .sp-sh-skel span) {
+  background-image: linear-gradient(100deg, transparent 30%, var(--sp-shine) 50%, transparent 70%);
+  background-size: 250% 100%; background-repeat: no-repeat;
+  animation: sp-sheen calc(var(--ap-d4) * 4.5) var(--ap-ease) infinite;
+}
+@keyframes sp-sheen { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+
+@media (prefers-reduced-motion: reduce) { :root :is(.ap-skel, .ap-skel-row, .ap-next-skel, .ap-panel-skel-card, .sp-skel, .sp-view-loading span, .sp-start-skel, .sp-brief-skel span, .sp-wb-loading span, .sp-sh-skel span) { animation: none; } }
+
+/* A long exact amount in a narrow tile steps down a size instead of breaking mid-number. */
+
+/* The agent's reasoning while it works: a quiet column beside one hairline, typed where the answer will begin. */
+.sp-thought { overflow: hidden; }
+.sp-thought[data-over] { -webkit-mask-image: linear-gradient(transparent, #000 44px); mask-image: linear-gradient(transparent, #000 44px); }
+.sp-thought p { transition: transform var(--ap-d3) var(--ap-ease); }
+@media (prefers-reduced-motion: reduce) { .sp-thought p { transition: none; } }
+.sp-thought p { margin: 0 0 4px; padding-inline-start: 12px; max-width: 64ch; box-shadow: inset 2px 0 0 var(--ap-hairline); font-size: 14px; line-height: 22px; color: var(--ap-ink-3); white-space: pre-line; overflow-wrap: anywhere; }
+[dir="rtl"] .sp-thought p { box-shadow: inset -2px 0 0 var(--ap-hairline); }
+
+/* ---------- A build that arrives: parts rise in order, rings draw, bars fill ---------- */
+
+ 
+ 
+/* The focus part is the one thing the eye lands on: lifted surface, the largest figure on the screen. */
+
+/* No card in a card: inside a card, sections are groups set apart by space and tone only. On the start screen the
+   build has no card of its own, so each section is its own card on the page. */
+
+/* Ring: a share drawn as an arc, the percent in its centre. */
+
+  
+
+@keyframes sp-b-ring-draw { from { stroke-dashoffset: 100; } }
+
+/* Bars in a ranked list fill one after another, thick enough to compare at a glance. */
+  
+  
+
+/* ---------- The confirmation card: the details as one readable list on the card itself ----------
+   Label beside value, one fact per line, so a long note wraps in full and nothing is cut off; no filled box inside
+   the card. What confirming does is a quiet sentence under the list. The button is the product's own colour: the
+   risk is said in words ("Needs an approver"), never by a red button that reads as an error. */
+
+/* A name with its detail on one line of a repeated item: the name leads, the detail sits quietly at the far end and
+   drops under the name as a whole when the two do not fit, so every row of a list breaks the same way. */
+
+/* A trailing sentence (a reason, a note) is read, not glanced at: it takes its own line and reads from the start. */
+
+/* ---------- Data map (/admin/peta): the flow diagram is the page's own part; the rest is the shared library ---------- */
+
+/* ---------- Admin overview: what waits on the admin leads; cost and the audit record beside it (library parts) ---------- */
+
+.sp-ov-link { color: var(--ap-ink-2); text-decoration: none; }
+@media (hover: hover) { .sp-ov-link:hover { color: var(--ap-accent); } }
+
+/* Company defaults: the four column handlings share one row; the routing choice and the group size sit on the next, the
+   two-option control on one line wide enough for both labels. */
+
+/* Icon-only row actions (delete) stay neutral; the accent is for verbs. */
+
+/* A made file's mark: the format reads by its tint, the label beside it names it. */
+/* A file the agent made: one surface that opens it, its type as a coloured tile, its review as a stamp. */
+.sp-file { display: flex; align-items: flex-start; gap: 14px; width: 100%; padding: 16px 18px; border: 0; border-radius: var(--ap-radius-card); background: var(--ap-surface); box-shadow: var(--sp-raise-s); color: var(--ap-ink); font: inherit; text-align: start; cursor: pointer; transition: box-shadow var(--ap-d2) var(--ap-ease), translate var(--ap-d2) var(--ap-ease); }
+@media (hover: hover) { .sp-file:hover { box-shadow: var(--sp-raise); translate: 0 -1px; } }
+.sp-file:active { translate: 0; }
+/* A file's format is a lit tile in its application's colour. */
+
+/* The file viewer: the file as its application lays it out, Download beside Close, the review at the foot. */
+
+/* The conversation, on the same surface: the question a person asks is raised, in the same type as the answer; the
+   agent's tool and skill bubbles are raised pills while they run (a skill sinks into the surface, it is a guide not
+   an action). */
+.ap-user { background: var(--ap-surface); box-shadow: var(--sp-raise-xs); border-radius: 22px 22px 8px 22px; }
+.ap-bubble { height: 36px; padding: 0 16px; box-shadow: var(--sp-raise-xs); }
+.ap-bubble-skill { background: transparent; box-shadow: var(--sp-well-s); }
+.ap-bubble[data-phase="failed"] { box-shadow: var(--sp-well-s); }
+
+/* The top bar's controls sit as far from the side as from the top: (bar height - control height) / 2. */
+.ap-shell .ap-top { padding-inline: calc((60px - var(--sp-ui-control)) / 2); }
+@media (max-width: 760px) { .ap-shell .ap-top { padding-inline: calc((56px - var(--sp-ui-control)) / 2); } }
+
+/* Every scroll area scrolls without a visible bar; the content's edge and the shades say there is more. */
+* { scrollbar-width: none; }
+*::-webkit-scrollbar { display: none; width: 0; height: 0; }
+
+/* Sheets and their controls on the one surface. A choice is a raised pill that sinks and lights its tick when picked;
+   the tick takes no room until then. A select is a well like any field. */
+.sp-sheet { background: var(--ap-backdrop); box-shadow: var(--sp-raise); border-radius: 28px 0 0 28px; }
+.sp-sheet-head { align-items: center; padding: 22px 24px 14px; }
+.sp-sheet-head h2 { font-size: 22px; line-height: 30px; letter-spacing: -0.012em; }
+.sp-sheet-body { padding: 4px 24px 28px; }
+.sp-sheet-foot { padding: 14px 24px 18px; box-shadow: none; background: transparent; }
+.sp-multi { gap: 10px; }
+.sp-multi-btn { min-height: 40px; padding: 0 16px; gap: 0; border-radius: 999px; background: var(--ap-surface); color: var(--ap-ink-2); box-shadow: var(--sp-raise-xs); font-weight: 500; transition: box-shadow var(--ap-d2) var(--ap-ease), color var(--ap-d2) var(--ap-ease), gap var(--ap-d2) var(--ap-ease); }
+.sp-multi-btn[aria-pressed="true"] { gap: 8px; background: var(--ap-surface); color: var(--ap-accent); box-shadow: var(--sp-well-s); }
+.sp-multi-check { width: 0; overflow: hidden; transition: width var(--ap-d2) var(--ap-ease), opacity var(--ap-d1) var(--ap-ease), transform var(--ap-d2) var(--ap-ease); }
+.sp-multi-btn[aria-pressed="true"] .sp-multi-check { width: 18px; height: 18px; border-radius: 50%; background: var(--sp-accg); color: #fff; }
+@media (hover: hover) { .sp-multi-btn:not([aria-pressed="true"]):hover { translate: 0 -1px; color: var(--ap-ink); } }
+.sp-select { min-height: 44px; padding: 0 16px; border-radius: 14px; box-shadow: var(--sp-well-s); }
+.sp-select:focus-visible { box-shadow: var(--sp-well-s), inset 0 0 0 2px var(--ap-accent); }
+.sp-pop { border-radius: 18px; box-shadow: var(--sp-raise-s); background: var(--ap-surface); }
+.sp-pop-row { border-radius: 12px; }
+
+/* The file viewer: the pages lie in a well of the surface, each a white sheet raised off it, arriving one after
+   another. While the file is converted, a blank sheet sets its lines one by one. */
+
+@keyframes sp-viewer-set { from { scale: 0 1; opacity: 0; } }
+@keyframes sp-viewer-sheen { from { background-position: 100% 0; } to { background-position: -50% 0; } }
+
+/* The review under the file is a raised note, not a grey box. */
+
+/* Task board: lanes sink into the surface, cards rise out of them. */
+.sp-board { gap: 14px; padding: 4px 4px 10px; }
+.sp-board-lane { background: transparent; box-shadow: var(--sp-well); border-radius: 20px; padding: 12px; gap: 10px; }
+.sp-board-lane ul { gap: 10px; }
+.sp-board-card { padding: 12px 14px; border-radius: 14px; box-shadow: var(--sp-raise-xs); gap: 4px; }
+.sp-board-item { border-radius: 14px; }
+@media (hover: hover) { button.sp-board-card:hover { box-shadow: var(--sp-raise-s); translate: 0 -1px; } }
+.sp-board-lane[data-drop] { box-shadow: var(--sp-well), inset 0 0 0 2px var(--ap-accent); }
+.sp-board-card { background: color-mix(in srgb, #fff 72%, var(--ap-surface)); }
+.sp-board-lane ul { padding: 2px 4px 8px; margin: 0 -4px -8px; }
+
+/* A segmented choice is a well with the picked option raised in it, like the tabs. */
+.sp-seg { padding: 5px; border-radius: 999px; background: transparent; box-shadow: var(--sp-well); gap: 2px; }
+.sp-seg-btn { border-radius: 999px; padding: 6px 16px; background: transparent; }
+.sp-seg-btn[aria-checked="true"] { background: var(--ap-surface); box-shadow: var(--sp-raise-xs); }

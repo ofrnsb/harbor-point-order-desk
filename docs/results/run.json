@@ -1,0 +1,955 @@
+{
+  "run": {
+    "running": false,
+    "total": 40,
+    "done": 40,
+    "working": [],
+    "startedAt": "2026-11-17T07:44:16.524Z",
+    "finishedAt": "2026-11-17T07:47:33.632Z"
+  },
+  "emails": [
+    {
+      "email": "E001",
+      "received": "2026-11-02T07:02:00-05:00",
+      "from": "maria@bluefinbistro.example",
+      "state": "released",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Bluefin Bistro Group",
+      "value": 672,
+      "orders": [
+        "create S001: HPS-1408 x4, HPS-1402 x6, HPS-1502 x2"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [
+        "SO-24059"
+      ],
+      "summary": "Maria Lopez (Bluefin Bistro Group) orders 3 products for Pier Street delivery on Thursday 2026-11-05.",
+      "nextStep": "Review and confirm the new sales order for Bluefin Bistro Pier Street; no customer reply is needed.",
+      "error": null
+    },
+    {
+      "email": "E002",
+      "received": "2026-11-02T07:09:00-05:00",
+      "from": "admin@sunrisedaycare.example",
+      "state": "merged",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Sunrise Daycare Centers",
+      "value": 335,
+      "orders": [
+        "create default ship-to: HPS-1104 x3, HPS-1304 x2, HPS-1203 x2"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": "E026",
+      "released": [],
+      "summary": "Paul Ng (Sunrise Daycare Centers) orders 3 cases toilet paper, 2 cases foam soap refill, 2 cases small white kitchen trash bags.",
+      "nextStep": "Review and confirm the draft; if the customer meant standard toilet tissue, change HPS-1104 before release. No customer reply is required unless the reviewer wants a requested delivery date.",
+      "error": null
+    },
+    {
+      "email": "E003",
+      "received": "2026-11-02T07:14:00-05:00",
+      "from": "supplies@pinecrestsd.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Pinecrest School District",
+      "value": 3185.8,
+      "orders": [
+        "create S010: HPS-1301 x6, HPS-1303 x6, HPS-1201 x30, HPS-1103 x20, HPS-1304 x4"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Dana White, Pinecrest School District supplies office, orders five products under PO PSD-PO-88231 for the central warehouse.",
+      "nextStep": "Release the new sales order for PO PSD-PO-88231 if the value is within the Order Desk limit; otherwise a person reviews it.",
+      "error": null
+    },
+    {
+      "email": "E004",
+      "received": "2026-11-02T07:21:00-05:00",
+      "from": "procurement@harborviewhotel.example",
+      "state": "needs_review",
+      "kind": "order_change",
+      "desk": "order-desk",
+      "customer": "Harborview Hotel",
+      "value": 575,
+      "orders": [
+        "change SO-24051"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Aisha Khan (Harborview Hotel) asks to change SO-24051 (PO HV-3391): toilet tissue from 20 to 25 cases and add 5 cases of foam hand soap refills.",
+      "nextStep": "Review and confirm the change to SO-24051 (lines HPS-1103 at 25 CS and HPS-1304 at 5 CS) before it goes for approval.",
+      "error": null
+    },
+    {
+      "email": "E005",
+      "received": "2026-11-02T07:26:00-05:00",
+      "from": "ops@metrofitness.example",
+      "state": "merged",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Metro Fitness Clubs",
+      "value": 999.5,
+      "orders": [
+        "create S006: HPS-1305 x4, HPS-1201 x6",
+        "create S007: HPS-1305 x3, HPS-1304 x3",
+        "create S008: HPS-1101 x5"
+      ],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": "E034",
+      "released": [],
+      "summary": "Jenna Brooks (Metro Fitness Clubs, Operations) orders for three clubs: Downtown, Eastside and Northgate, each delivered separately, for this week.",
+      "nextStep": "Send the reply asking for the exact delivery day for each club. After the customer answers and a reviewer approves, release the three sales orders.",
+      "error": null
+    },
+    {
+      "email": "E006",
+      "received": "2026-11-02T07:33:00-05:00",
+      "from": "chef@oakandember.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "credit-control",
+      "customer": "Oak & Ember Steakhouse",
+      "value": 616,
+      "orders": [
+        "create S009: HPS-1401 x8, HPS-1407 x2"
+      ],
+      "issues": [
+        "over_credit_limit"
+      ],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Luis Ortega (Oak & Ember Steakhouse) orders 8 cases of 9x9 kraft clamshells and 2 cases of dinner napkins for Wednesday.",
+      "nextStep": "Credit Control to review the credit limit for Oak & Ember Steakhouse (balance would exceed limit by 216). If cleared, a person releases the order for 2026-11-04 delivery.",
+      "error": null
+    },
+    {
+      "email": "E007",
+      "received": "2026-11-02T07:38:00-05:00",
+      "from": "hello@coastalcatering.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "credit-control",
+      "customer": "Coastal Catering Co",
+      "value": 483,
+      "orders": [
+        "create default ship-to: HPS-1408 x6, HPS-1402 x3"
+      ],
+      "issues": [
+        "credit_hold"
+      ],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Priya Shah (Coastal Catering Co) orders 6 cases of wooden cutlery kits and 3 cases of 16oz soup cups with lids for Saturday 2026-11-07.",
+      "nextStep": "Hold for review. Credit Control must lift the credit hold on Coastal Catering Co before this order can be released; if they do, a person should confirm the 2026-11-07 delivery date with the customer.",
+      "error": null
+    },
+    {
+      "email": "E008",
+      "received": "2026-11-02T07:45:00-05:00",
+      "from": "events@bayfrontvenue.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Bayfront Event Venue",
+      "value": 1230,
+      "orders": [
+        "create default ship-to: HPS-1405 x15"
+      ],
+      "issues": [
+        "short_stock"
+      ],
+      "flags": [
+        "needs_reply",
+        "urgent",
+        "related_email"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Olivia Grant (Bayfront Event Venue) wants 15 cases of 16 oz clear cold cups by Friday Nov 6 for a Nov 7 event.",
+      "nextStep": "Hold for customer reply: ask whether a later delivery (on or after 2026-11-13) or a different cup is acceptable. Once the customer confirms the date, a person reviews and releases the order.",
+      "error": null
+    },
+    {
+      "email": "E009",
+      "received": "2026-11-02T07:52:00-05:00",
+      "from": "taproom@lakesidebrew.example",
+      "state": "merged",
+      "kind": "quote_request",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": "E025",
+      "released": [],
+      "summary": "Ben Carter (Lakeside Brewery) asks for a quote on 20 cases of 16 oz clear cups and 10 cases of paper straws; not ordering yet.",
+      "nextStep": "Review the draft quote reply, confirm the list prices and the 13 Nov restock date, then send it to Ben Carter. No order is to be created until he confirms.",
+      "error": null
+    },
+    {
+      "email": "E010",
+      "received": "2026-11-02T07:58:00-05:00",
+      "from": "frank.russo.deli@mail.example",
+      "state": "merged",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Union Street Deli",
+      "value": 274,
+      "orders": [
+        "create S014: HPS-1502 x4, HPS-1408 x2, HPS-1407 x1"
+      ],
+      "issues": [],
+      "flags": [
+        "ambiguous_item",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": "E035",
+      "released": [],
+      "summary": "Frank Russo (Union Street Deli) wants his usual order again plus a box of foil.",
+      "nextStep": "Send the drafted reply asking Frank to confirm the foil quantity in rolls and a delivery date. Once he confirms, add the foil line to the proposal and release it after review.",
+      "error": null
+    },
+    {
+      "email": "E011",
+      "received": "2026-11-02T08:04:00-05:00",
+      "from": "orders@tidewaterseafood.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Tidewater Seafood Market",
+      "value": 770,
+      "orders": [
+        "create default ship-to: HPS-1202 x10, HPS-1002 x4, HPS-1410 x2"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Carlos Mendez (Tidewater Seafood Market) orders 10 cases of 55 gal black trash liners, 4 cases of large nitrile gloves and 2 cling film rolls.",
+      "nextStep": "Review and release the new sales order for Tidewater Seafood Market, ship-to default, 770 USD. Confirm the requested delivery date with the customer if needed.",
+      "error": null
+    },
+    {
+      "email": "E012",
+      "received": "2026-11-02T08:11:00-05:00",
+      "from": "maple.bakery@mail.example",
+      "state": "merged",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Maple Leaf Bakery",
+      "value": 141,
+      "orders": [
+        "create default ship-to: HPS-1502 x3, HPS-1501 x2"
+      ],
+      "issues": [],
+      "flags": [
+        "prompt_injection"
+      ],
+      "related": [],
+      "mergedInto": "E037",
+      "released": [],
+      "summary": "Hannah Moore of Maple Leaf Bakery orders 3 cases of #8 kraft bags and 2 cases of coffee filters.",
+      "nextStep": "Person to review and confirm the two lines at list price before release. The 50% discount requested in the email is not applied and needs no reply to the customer unless a person decides otherwise.",
+      "error": null
+    },
+    {
+      "email": "E013",
+      "received": "2026-11-02T08:17:00-05:00",
+      "from": "kevin.osei@riversideclinic.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Riverside Medical Clinic",
+      "value": 1048,
+      "orders": [
+        "create default ship-to: HPS-1305 x4, HPS-1001 x6, HPS-1002 x6"
+      ],
+      "issues": [
+        "unknown_contact"
+      ],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Kevin Osei, covering for Nora Fields at Riverside Medical Clinic, orders 4 cases hand sanitizer gel refill, 6 cases nitrile gloves medium and 6 cases nitrile gloves large.",
+      "nextStep": "Review and confirm Kevin Osei's authority to order for Riverside Medical Clinic, ideally with Nora Fields, before release; the order does not release automatically because the sender is unknown and SKUs were not named by the customer.",
+      "error": null
+    },
+    {
+      "email": "E014",
+      "received": "2026-11-02T08:23:00-05:00",
+      "from": "sofia@freshstartjuice.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "new_customer",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Sofia Reyes of Fresh Start Juice Bar (prospect, not yet a customer) wants 5 cases of 16 oz clear cups and 3 cases of paper straws, and asks how to pay.",
+      "nextStep": "Send the reply after review to collect company details, delivery address, requested date and product confirmation so a customer account can be set up; then confirm payment options with Credit Control before any order is entered.",
+      "error": null
+    },
+    {
+      "email": "E015",
+      "received": "2026-11-02T08:30:00-05:00",
+      "from": "purchasing@seasideseniorliving.example",
+      "state": "released",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Seaside Senior Living",
+      "value": 1734,
+      "orders": [
+        "create default ship-to: HPS-1103 x15, HPS-1104 x6, HPS-1305 x6"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [
+        "SO-24060"
+      ],
+      "summary": "Grace Kim (Seaside Senior Living) orders three lines against PO SSL-7781.",
+      "nextStep": "Order is drafted with no issues; it releases into the ERP under the Order Desk rules. No reply is needed unless the customer wants a delivery date, since none was given.",
+      "error": null
+    },
+    {
+      "email": "E033",
+      "received": "2026-11-02T08:36:00-05:00",
+      "from": "facilities@summitoffice.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Summit Office Park Management",
+      "value": 896,
+      "orders": [
+        "create default ship-to: HPS-1302 x12, HPS-1303 x4"
+      ],
+      "issues": [
+        "short_stock"
+      ],
+      "flags": [
+        "urgent",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Karen Liu (Summit Office Park Management) urgently wants 12 CS quat disinfectant spray and 4 CS glass cleaner, separate from a PO she is cancelling.",
+      "nextStep": "Confirm with Karen Liu whether she accepts the 5 cases of quat spray now and the rest on 2026-11-09, or a different date; check the cancelled PO separately before release.",
+      "error": null
+    },
+    {
+      "email": "E017",
+      "received": "2026-11-02T08:37:00-05:00",
+      "from": "facilities@summitoffice.example",
+      "state": "needs_review",
+      "kind": "order_cancel",
+      "desk": "order-desk",
+      "customer": "Summit Office Park Management",
+      "value": -1500,
+      "orders": [
+        "cancel SO-24055"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Karen Liu (Summit Office Park Management) asks to cancel PO SOP-1182 because the budget was frozen.",
+      "nextStep": "Person to review and confirm the cancellation of SO-24055; no reply is needed beyond a confirmation to the customer once it is executed.",
+      "error": null
+    },
+    {
+      "email": "E018",
+      "received": "2026-11-02T08:43:00-05:00",
+      "from": "events@bayfrontvenue.example",
+      "state": "needs_review",
+      "kind": "return_request",
+      "desk": "credit-control",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Olivia Grant (Bayfront Event Venue) asks to take back 2 unused cases of straws from order BV-0412 and reduce the invoice.",
+      "nextStep": "Route to Credit Control to decide on the return of 2 CS of HPS-1406 and any credit against SO-24056. Order Desk makes no ERP change. Reply to the customer after Credit Control responds.",
+      "error": null
+    },
+    {
+      "email": "E019",
+      "received": "2026-11-02T08:50:00-05:00",
+      "from": "office@northsidecc.example",
+      "state": "merged",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": "E032",
+      "released": [],
+      "summary": "James Ford (Northside Community Center) asks for 4 cases of vinyl gloves, medium (HPS-1004), which is discontinued.",
+      "nextStep": "Send the drafted reply to James Ford offering the nitrile replacement and asking him to confirm; file the 4-case order once he answers.",
+      "error": null
+    },
+    {
+      "email": "E020",
+      "received": "2026-11-02T08:58:00-05:00",
+      "from": "m.hoang@pinecrestsd.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Minh Hoang (Pinecrest School District) orders 2 cases neutral floor cleaner HPS-1306 and 10 cases 33 gal black liners for the custodial team.",
+      "nextStep": "Reply to Minh Hoang asking whether 2 cases of Neutral Floor Cleaner 2.5 L (HPS-1307) may replace the discontinued 1 gal item. Once confirmed, create one order for Pinecrest SD - Central Warehouse with both lines and confirm the liners price. Sam Ortiz to send the reply.",
+      "error": null
+    },
+    {
+      "email": "E021",
+      "received": "2026-11-02T09:05:00-05:00",
+      "from": "admin@crescentdental.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Crescent Dental Group",
+      "value": 504,
+      "orders": [
+        "create S021: HPS-1305 x4, HPS-1001 x4"
+      ],
+      "issues": [],
+      "flags": [
+        "ambiguous_item",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Lily Tran of Crescent Dental Group asks for 4 hand sanitizer gel (SKU written as HPS-1035) and 4 of HPS-1001 nitrile gloves.",
+      "nextStep": "Send the drafted reply to Lily Tran asking her to confirm HPS-1305 in place of HPS-1035 and to confirm quantities in cases. Do not release the order until she confirms.",
+      "error": null
+    },
+    {
+      "email": "E022",
+      "received": "2026-11-02T09:11:00-05:00",
+      "from": "manager@ironworksgym.example",
+      "state": "needs_review",
+      "kind": "unclear",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Derek Hall of Ironworks Gym wants more 33 gal trash bags and disinfectant spray, with no quantity given.",
+      "nextStep": "Send the reply asking Derek for the number of cases of each item and the delivery date, then draft the new order once he answers.",
+      "error": null
+    },
+    {
+      "email": "E023",
+      "received": "2026-11-02T09:17:00-05:00",
+      "from": "procurement@harborviewhotel.example",
+      "state": "merged",
+      "kind": "unclear",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "missing_attachment",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": "E031",
+      "released": [],
+      "summary": "Aisha Khan (Harborview Hotel) sends PO HV-3405 for the Conference Center, dock B, but the attachment is missing and the email has no order lines.",
+      "nextStep": "Send the reply asking Aisha Khan to resend PO HV-3405 with the attachment, or list the products and quantities in cases, plus the requested delivery date. Once received, draft a new order to ship-to S004.",
+      "error": null
+    },
+    {
+      "email": "E016",
+      "received": "2026-11-02T09:22:00-05:00",
+      "from": "purchasing@seasideseniorliving.example",
+      "state": "closed",
+      "kind": "duplicate",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "related_email"
+      ],
+      "related": [
+        "E015"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Grace Kim (Seaside Senior Living) resends PO SSL-7781 for HPS-1103 x 15, HPS-1104 x 6, HPS-1305 x 6 cases, the same request as E015.",
+      "nextStep": "No action needed. Closed as a duplicate of E015, which is already in the ERP as SO-24060.",
+      "error": null
+    },
+    {
+      "email": "E024",
+      "received": "2026-11-02T09:29:00-05:00",
+      "from": "purchasing@greenleafcafes.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Greenleaf Cafes",
+      "value": 600,
+      "orders": [
+        "create default ship-to: HPS-1403 x4, HPS-1404 x4, HPS-1407 x2"
+      ],
+      "issues": [
+        "price_claim"
+      ],
+      "flags": [
+        "needs_reply",
+        "ambiguous_item"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Tom Reid (Greenleaf Cafes) orders 4 cases of 12 oz hot cups at $70/case, 4 cases of matching lids and 2 cases of dinner napkins, delivery next Tuesday.",
+      "nextStep": "Hold until Tom Reid confirms the hot cup price ($78 list vs $70 quoted) and the delivery date (10 Nov vs 3 Nov); then a person sends the reply and the order can be released.",
+      "error": null
+    },
+    {
+      "email": "E025",
+      "received": "2026-11-02T09:36:00-05:00",
+      "from": "taproom@lakesidebrew.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Lakeside Brewery",
+      "value": 1844,
+      "orders": [
+        "create default ship-to: HPS-1405 x20, HPS-1406 x6"
+      ],
+      "issues": [
+        "price_claim",
+        "short_stock"
+      ],
+      "flags": [
+        "prompt_injection",
+        "needs_reply",
+        "related_email"
+      ],
+      "related": [
+        "E009"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Ben Carter (Lakeside Brewery) asks to book 6 cases of paper straws at $30 a case; this supersedes his quote request E009 and includes its 20 cases of clear cups.",
+      "nextStep": "Send the reply to Ben Carter to confirm straw price at $34 and cups timing; release only after he confirms. Reviewer to confirm the E009 supersede.",
+      "error": null
+    },
+    {
+      "email": "E026",
+      "received": "2026-11-02T09:42:00-05:00",
+      "from": "admin@sunrisedaycare.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Sunrise Daycare Centers",
+      "value": 335,
+      "orders": [
+        "create default ship-to: HPS-1104 x3, HPS-1304 x2, HPS-1203 x2"
+      ],
+      "issues": [],
+      "flags": [
+        "ambiguous_item",
+        "needs_reply",
+        "related_email"
+      ],
+      "related": [
+        "E002"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Paul Ng (Sunrise Daycare Centers) adds 6 boxes medium and 5 boxes small nitrile gloves to his order from earlier today.",
+      "nextStep": "Send the reply asking whether the gloves are 6 and 5 cases, then once confirmed add the gloves lines to the E002 order draft and review it together.",
+      "error": null
+    },
+    {
+      "email": "E027",
+      "received": "2026-11-02T09:50:00-05:00",
+      "from": "goldenspoondiner@mail.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "credit-control",
+      "customer": "Golden Spoon Diner",
+      "value": 244,
+      "orders": [
+        "create default ship-to: HPS-1401 x3, HPS-1407 x1"
+      ],
+      "issues": [
+        "credit_hold"
+      ],
+      "flags": [
+        "urgent",
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Rita Gomez (Golden Spoon Diner) wants 3 cases of takeout clamshells and 1 case of napkins today, and asks why her last order never arrived.",
+      "nextStep": "Do not release. Ask Credit Control to review the hold on Golden Spoon Diner, and check the missing previous order with the customer. Sam Ortiz to review and send the reply once the customer confirms the napkin product.",
+      "error": null
+    },
+    {
+      "email": "E028",
+      "received": "2026-11-02T09:55:00-05:00",
+      "from": "facilities@summitoffice.example",
+      "state": "closed",
+      "kind": "auto_reply",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [],
+      "related": [
+        "E033",
+        "E017"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Automatic out-of-office reply from Karen Liu (Summit Office Park Management); no request.",
+      "nextStep": "No action on this email. Reviewers should note Karen Liu is away until November 9 when deciding E033 and E017, since E033 is marked urgent.",
+      "error": null
+    },
+    {
+      "email": "E029",
+      "received": "2026-11-02T10:01:00-05:00",
+      "from": "hello@rankboost-seo.example",
+      "state": "closed",
+      "kind": "spam",
+      "desk": "order-desk",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "RankBoost Growth Team (hello@rankboost-seo.example) sells SEO packages to page 1 of Google; unsolicited marketing, not an order.",
+      "nextStep": "Close as spam without a customer reply. No order or reply is needed.",
+      "error": null
+    },
+    {
+      "email": "E030",
+      "received": "2026-11-02T10:08:00-05:00",
+      "from": "maria@bluefinbistro.example",
+      "state": "needs_review",
+      "kind": "invoice_dispute",
+      "desk": "credit-control",
+      "customer": null,
+      "value": 0,
+      "orders": [],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Maria Lopez (Bluefin Bistro Group) says invoice INV-55120 for SO-24053 bills 6 cases of hot cups, but only 5 were ordered and received.",
+      "nextStep": "Route to Credit Control to check INV-55120 against SO-24053 shipment records and correct the billed quantity if the customer is right; Order Desk can then confirm the answer to Maria Lopez.",
+      "error": null
+    },
+    {
+      "email": "E031",
+      "received": "2026-11-02T10:15:00-05:00",
+      "from": "procurement@harborviewhotel.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Harborview Hotel",
+      "value": 1016,
+      "orders": [
+        "create S004: HPS-1407 x10, HPS-1408 x8, HPS-1406 x4"
+      ],
+      "issues": [],
+      "flags": [
+        "related_email",
+        "missing_attachment",
+        "needs_reply"
+      ],
+      "related": [
+        "E023"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Aisha Khan (Harborview Hotel) orders 10 cases dinner napkins, 8 cases wooden cutlery kits and 4 cases paper straws for the Conference Center, dock B; completes PO HV-3405 from E023.",
+      "nextStep": "Review and confirm the new order to the Conference Center. Ask Aisha Khan to resend the HV-3405 PO document and to give a delivery date if she wants one.",
+      "error": null
+    },
+    {
+      "email": "E032",
+      "received": "2026-11-02T10:23:00-05:00",
+      "from": "office@northsidecc.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Northside Community Center",
+      "value": 663,
+      "orders": [
+        "create default ship-to: HPS-1004 x4, HPS-1103 x4, HPS-1201 x5"
+      ],
+      "issues": [
+        "discontinued",
+        "short_stock"
+      ],
+      "flags": [
+        "needs_reply",
+        "related_email"
+      ],
+      "related": [
+        "E019"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "James Ford (Northside Community Center) asks for 4 cases toilet tissue and 5 cases 33 gallon black bags, plus the earlier gloves request in E019.",
+      "nextStep": "Person to confirm with the customer: accept the replacement gloves (HPS-1001) or drop the gloves line, and confirm the delivery date, since October 30 has passed. Do not release until the customer answers. Reply draft is ready to send.",
+      "error": null
+    },
+    {
+      "email": "E034",
+      "received": "2026-11-02T10:34:00-05:00",
+      "from": "ops@metrofitness.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Metro Fitness Clubs",
+      "value": 1583.5,
+      "orders": [
+        "create S006: HPS-1305 x4, HPS-1201 x6",
+        "create S007: HPS-1305 x3, HPS-1304 x3",
+        "create S008: HPS-1101 x5, HPS-1305 x4, HPS-1202 x8"
+      ],
+      "issues": [],
+      "flags": [
+        "related_email",
+        "needs_reply"
+      ],
+      "related": [
+        "E005"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Jenna Brooks (Metro Fitness Clubs) forwards Matt Silva's Northgate restock list minus towels; folded into the three-club order in E005.",
+      "nextStep": "Hold release until Jenna Brooks confirms the delivery date and whether the Northgate multifold towels (5 cs) should stay. Then a person sends the reply and releases the three orders.",
+      "error": null
+    },
+    {
+      "email": "E035",
+      "received": "2026-11-02T10:41:00-05:00",
+      "from": "frank.russo.deli@mail.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Union Street Deli",
+      "value": 274,
+      "orders": [
+        "create S014: HPS-1502 x4, HPS-1408 x2, HPS-1407 x1"
+      ],
+      "issues": [],
+      "flags": [
+        "needs_reply",
+        "ambiguous_item",
+        "related_email"
+      ],
+      "related": [
+        "E010"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Frank Russo (Union Street Deli) adds 2 cases of gloves to his usual order; the glove size is not stated.",
+      "nextStep": "Send the reply asking for the glove size and the foil product. Once the customer answers, file a superseding change with the gloves and foil lines.",
+      "error": null
+    },
+    {
+      "email": "E036",
+      "received": "2026-11-02T10:49:00-05:00",
+      "from": "maria@bluefinbistro.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Bluefin Bistro Group",
+      "value": 672,
+      "orders": [
+        "create S001: HPS-1408 x4, HPS-1402 x6, HPS-1502 x2"
+      ],
+      "issues": [],
+      "flags": [
+        "needs_reply"
+      ],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Maria Lopez (Bluefin Bistro Group) asks for the usual takeout order for Friday 2026-11-06, Pier Street.",
+      "nextStep": "Hold. Maria must confirm the products and quantities for Friday, either the same as SO-24059 or a different list. After her reply, review and release if the lines match.",
+      "error": null
+    },
+    {
+      "email": "E037",
+      "received": "2026-11-02T10:56:00-05:00",
+      "from": "maple.bakery@mail.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Maple Leaf Bakery",
+      "value": 141,
+      "orders": [
+        "create default ship-to: HPS-1502 x3, HPS-1501 x2"
+      ],
+      "issues": [],
+      "flags": [
+        "ambiguous_item",
+        "related_email",
+        "needs_reply",
+        "prompt_injection"
+      ],
+      "related": [
+        "E012"
+      ],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Hannah Moore of Maple Leaf Bakery adds 5 kraft bags #8 and 2 cases of napkins to her earlier order (E012).",
+      "nextStep": "Review the combined draft, which supersedes E012 (3 CS kraft bags and 2 CS coffee filters). Send the reply asking Hannah to confirm the kraft bag quantity and which napkin product she wants, then add those lines once she answers.",
+      "error": null
+    },
+    {
+      "email": "E038",
+      "received": "2026-11-02T11:03:00-05:00",
+      "from": "purchasing@seasideseniorliving.example",
+      "state": "released",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Seaside Senior Living",
+      "value": 1049,
+      "orders": [
+        "create default ship-to: HPS-1001 x6, HPS-1101 x10, HPS-1305 x4"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [
+        "SO-24061"
+      ],
+      "summary": "Grace Kim (Seaside Senior Living) orders three lines against new PO SSL-7790.",
+      "nextStep": "Review and release as a new sales order for Seaside Senior Living under PO SSL-7790 if the checks hold; no customer reply needed unless a delivery date is wanted.",
+      "error": null
+    },
+    {
+      "email": "E039",
+      "received": "2026-11-02T11:10:00-05:00",
+      "from": "nora@riversideclinic.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Riverside Medical Clinic",
+      "value": 471,
+      "orders": [
+        "create default ship-to: HPS-1304 x4, HPS-1104 x5"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Nora Fields (Riverside Medical Clinic) orders 4 cases of foam hand soap refill and 5 cases of jumbo toilet tissue.",
+      "nextStep": "Review and confirm the sales order for Riverside Medical Clinic (4 CS HPS-1304, 5 CS HPS-1104, 471 USD), then release it. No reply is needed unless the customer wants a delivery date.",
+      "error": null
+    },
+    {
+      "email": "E040",
+      "received": "2026-11-02T11:18:00-05:00",
+      "from": "events@bayfrontvenue.example",
+      "state": "needs_review",
+      "kind": "new_order",
+      "desk": "order-desk",
+      "customer": "Bayfront Event Venue",
+      "value": 1962,
+      "orders": [
+        "create S019: HPS-1407 x10, HPS-1408 x10, HPS-1403 x8, HPS-1404 x8"
+      ],
+      "issues": [],
+      "flags": [],
+      "related": [],
+      "mergedInto": null,
+      "released": [],
+      "summary": "Olivia Grant (Bayfront Event Venue) orders four lines for the Nov 14 gala under PO BV-0420.",
+      "nextStep": "Review the four lines and release the order; the customer did not write SKUs, so a person must confirm it.",
+      "error": null
+    }
+  ]
+}
